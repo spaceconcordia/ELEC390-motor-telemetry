@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SpaceCadets</string>
+    <string name="display_modes">Display Modes</string>
+    <string name="action_sensor_select">Display Mode</string>
+    <string name="title_activity_single_sensor_select">Single-Sensor Select</string>
+    <string name="title_activity_multi_sensor_select">Multi-Sensor Select</string>
+    <string name="title_activity_overlay_sensor_select">Overlay Multi-Sensor Select</string>
+
+</resources>
