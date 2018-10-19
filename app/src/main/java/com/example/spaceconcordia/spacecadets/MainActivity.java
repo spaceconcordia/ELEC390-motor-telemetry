@@ -1,6 +1,8 @@
 package com.example.spaceconcordia.spacecadets;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,12 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.spaceconcordia.spacecadets.Bluetooth.BTpaired;
+import com.example.spaceconcordia.spacecadets.BluetoothDialog;
+import com.example.spaceconcordia.spacecadets.BTadapter;
+
 /// Activity allows user to access launch and emergency stop buttons directly, and access to screenselectdialog
 public class MainActivity extends AppCompatActivity {
 
     private Button launchButton;
     private Button emergencyStopButton;
     private MenuItem screenSelectButton;
+    BTadapter BluetoothAdapter;
+    BTpaired BTpairedlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
                 //TODO what happens when the emergency stop button is clicked
             }
         });
+        BluetoothAdapter = new BTadapter();
+
+        BluetoothAdapter.Connect(BTpairedlist); // Get paired bluetooth devices
+
+        BluetoothDialog BTdialog = new BluetoothDialog();
+
+        BTdialog.passData(this, BTpairedlist);
+
+        BTdialog.show(getSupportFragmentManager(), "Select Bluetooth Module");
 
     }
 

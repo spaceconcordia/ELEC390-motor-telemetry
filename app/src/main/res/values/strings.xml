@@ -5,5 +5,6 @@
     <string name="title_activity_single_sensor_select">Single-Sensor Select</string>
     <string name="title_activity_multi_sensor_select">Multi-Sensor Select</string>
     <string name="title_activity_overlay_sensor_select">Overlay Multi-Sensor Select</string>
-
+    <string name="Title_Bluetooth_dialog">Select the Rocket Engine bluetooth adapter</string>
+    <string name="Button_Bluetooth_dialog_testing">Standalone testing</string>
 </resources>
