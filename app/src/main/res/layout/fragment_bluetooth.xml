@@ -15,30 +15,37 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/Bluetooth_Dialog_Listview"
+    <TableRow
+        android:id="@+id/Bluetooth_Dialog_Listview_Row"
+        android:layout_below="@+id/Title_Bluetooth_dialog"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/Title_Bluetooth_dialog"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="-383dp" />
-
-    <Button
-        android:id="@+id/Button_Bluetooth_Dialog_StandAlone"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="360dp"
-        android:layout_marginEnd="115dp"
-        android:layout_marginRight="115dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/Button_Bluetooth_dialog_testing" />
-    "/>
+        android:gravity="center">
+
+        <ListView
+            android:id="@+id/Bluetooth_Dialog_Listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableRow>
+    <TableRow
+        android:id="@+id/Button_Bluetooth_Dialog_StandAlone_Row"
+        android:layout_below="@+id/Bluetooth_Dialog_Listview_Row"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/Button_Bluetooth_Dialog_StandAlone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/Button_Bluetooth_dialog_testing" />
+    </TableRow>
+
 
 
 </RelativeLayout>
