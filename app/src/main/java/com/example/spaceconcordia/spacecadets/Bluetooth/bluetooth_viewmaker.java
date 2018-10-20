@@ -12,7 +12,7 @@ import com.example.spaceconcordia.spacecadets.R;
 import java.util.ArrayList;
 
 
-//This class inflate and populate each elements of the listview
+//This class inflate and populate each elements of the bluetooth listview
 public class bluetooth_viewmaker extends ArrayAdapter<String>{
 
     private final Activity context;
@@ -35,7 +35,7 @@ public class bluetooth_viewmaker extends ArrayAdapter<String>{
         //inflate current Course display
         View rowView= inflater.inflate(R.layout.bluetoothlist, null, true);
 
-        //Populate each textview element of course_and_grades
+        //Populate each textview element of bluetooth naame and address
         TextView TexttBluetoothName = (TextView) rowView.findViewById(R.id.Bluetooth_NAME);
         TextView textBluetoothAddress = (TextView) rowView.findViewById(R.id.Bluetooth_ADDRESS);
 

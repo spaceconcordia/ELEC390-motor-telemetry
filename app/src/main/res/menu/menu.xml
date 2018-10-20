@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">>
+    xmlns:app="http://schemas.android.com/apk/res-auto"><![CDATA[>
 
+    ]]>
+    <item
+        android:id="@+id/BluetoothActionButton"
+        android:icon="@drawable/oc_bluetooth"
+        android:title="Bluetooth"
+        app:showAsAction="always"></item>
     <item
         android:id="@+id/screenSelectActionButton"
         android:title="@string/action_sensor_select"
         app:showAsAction="always"></item>
-
 </menu>
