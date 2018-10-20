@@ -52,10 +52,6 @@ public class BluetoothDialog extends DialogFragment{
 
             Set<BluetoothDevice> pairedDevices = LocalBluetoothAdapter.getBondedDevices();
 
-
-
-// that part is still buggy
-
             if (!pairedDevices.isEmpty()) {
 
                 ArrayList<String> Name = new ArrayList<>();
@@ -71,7 +67,6 @@ public class BluetoothDialog extends DialogFragment{
                 AdapterBluetoothList = new bluetooth_viewmaker(getActivity(), Name,Address);
                 Bluetooth_Listview.setAdapter(AdapterBluetoothList);
             }
-
         }
 
         Buttoon_Standalone = view.findViewById(R.id.Button_Bluetooth_Dialog_StandAlone);
