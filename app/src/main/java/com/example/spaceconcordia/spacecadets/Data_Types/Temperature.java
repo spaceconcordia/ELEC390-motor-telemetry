@@ -1,13 +1,14 @@
-package com.example.spaceconcordia.spacecadets;
+package com.example.spaceconcordia.spacecadets.Data_Types;
 
-public class Pressure_Sensor {
+public class Temperature {
+
 
     private int ID;
     private short Value;
     private short Old_Value;
-    private int Average;
+    private int Average; //if we ever want to display the average, at least we have it here
 
-    private Pressure_Sensor(int id, short value){
+    private Temperature(int id, short value){
         ID = id;
         Value = value;
         Old_Value = 0;
@@ -31,4 +32,5 @@ public class Pressure_Sensor {
     public int getID(){
         return ID;
     }
+
 }

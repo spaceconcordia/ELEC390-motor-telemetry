@@ -1,4 +1,4 @@
-package com.example.spaceconcordia.spacecadets;
+package com.example.spaceconcordia.spacecadets.Data_Types;
 
 public class Flow_Sensor {
 
