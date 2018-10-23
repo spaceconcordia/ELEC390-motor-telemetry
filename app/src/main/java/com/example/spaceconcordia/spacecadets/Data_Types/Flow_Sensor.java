@@ -36,9 +36,7 @@ public class Flow_Sensor {
         Value = value;
         Average = (Old_Value+Value)/2;
 
-        if(value>Max_Value || value<Min_Value){
-            Alert = true;
-        }
+        Alert = value > Max_Value || value < Min_Value;
     }
 
     public short getValue(){
