@@ -6,9 +6,19 @@ public class Temperature {
     private int Average; //if we ever want to display the average, at least we have it here
     private int Max_Value;
     private Boolean Alert;
+    private String name; //name of the sensor. can be its location on rocket also
 
     //this is a first constructor so if we forget to input a max value, it assigns one
     private Temperature(){
+        Value = 0;
+        Average = 0;
+        Alert = false;
+        Max_Value = 200; //if no max value is entered at least we have one
+    }
+
+    //Constructor that creates a sensor in regards to its given name
+    public Temperature(String name){
+        name=this.name;
         Value = 0;
         Average = 0;
         Alert = false;
@@ -37,5 +47,7 @@ public class Temperature {
     public boolean Alert(){
         return Alert;
     }
+
+    public String getName(){ return name;}
 
 }

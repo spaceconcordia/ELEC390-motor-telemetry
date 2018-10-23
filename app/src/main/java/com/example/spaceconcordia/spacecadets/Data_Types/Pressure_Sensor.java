@@ -8,9 +8,19 @@ public class Pressure_Sensor {
     private boolean Alert;
     private int Max_Value; //I assumed for pressure there is a min and max value that are important
     private int Min_Value;
+    private String name;
 
 
     private Pressure_Sensor(){
+        Value = 0;
+        Average = 0;
+        Max_Value = 500; // change this value to actual max psi of system. if we forget to enter at least we have it
+        Min_Value = 0;
+        Alert = false;
+    }
+
+    private Pressure_Sensor(String name){
+        name=this.name;
         Value = 0;
         Average = 0;
         Max_Value = 500; // change this value to actual max psi of system. if we forget to enter at least we have it
@@ -40,4 +50,6 @@ public class Pressure_Sensor {
     public boolean Alert(){
         return Alert;
     }
+
+    public String getName(){return name;}
 }

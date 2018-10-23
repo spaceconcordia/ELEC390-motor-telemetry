@@ -7,8 +7,18 @@ public class Flow_Sensor {
     private int Max_Value;
     private int Min_Value;
     private boolean Alert;
+    private String name;
 
     private Flow_Sensor(){
+        Value = 0;
+        Average = 0;
+        Max_Value = 100; //Change these values to proper ones please
+        Min_Value = 10;
+        Alert = false;
+    }
+
+    private Flow_Sensor(String name){
+        name=this.name;
         Value = 0;
         Average = 0;
         Max_Value = 100; //Change these values to proper ones please
@@ -38,4 +48,6 @@ public class Flow_Sensor {
     public boolean Alert(){
         return Alert;
     }
+
+    public String getName(){return name;}
 }
