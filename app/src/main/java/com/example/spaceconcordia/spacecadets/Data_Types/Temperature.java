@@ -3,7 +3,6 @@ package com.example.spaceconcordia.spacecadets.Data_Types;
 public class Temperature {
 
     private short Value;
-    private short Old_Value;
     private int Average; //if we ever want to display the average, at least we have it here
     private int Max_Value;
     private Boolean Alert;
@@ -11,7 +10,6 @@ public class Temperature {
     //this is a first constructor so if we forget to input a max value, it assigns one
     private Temperature(){
         Value = 0;
-        Old_Value = 0;
         Average = 0;
         Alert = false;
         Max_Value = 200; //if no max value is entered at least we have one
@@ -23,9 +21,8 @@ public class Temperature {
     }
 
     public void UpdateValue(short value){
-        Old_Value = Value;
         Value = value;
-        Average = (Old_Value+Value)/2;
+        Average = (Average+value)/2;
         Alert = value > Max_Value;
     }
 
