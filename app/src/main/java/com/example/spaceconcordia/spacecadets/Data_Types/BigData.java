@@ -5,9 +5,12 @@ public class BigData {
     private static int FlowSen = 2;
     private static int PresSen = 13;
 
-    private Temperature Temp_Sensor_List[];
-    private Flow_Sensor Flow_Sensor_List[];
-    private Pressure_Sensor Pressure_Sensor_List[];
+    //keep these public to be able to access for storing data in sql, or add a function in bigdata
+    // that stores the value in sql, we can use it as Bigdata.save()
+
+    public Temperature Temp_Sensor_List[];
+    public Flow_Sensor Flow_Sensor_List[];
+    public Pressure_Sensor Pressure_Sensor_List[];
 
 
     public BigData(){
@@ -31,6 +34,28 @@ public class BigData {
         // To HERE
     }
 
+    public void BigDataUpdata(  /* here we input the data stream from bluetooth   */){
 
+        //here we populate bigdata with all the values from the sensors
+
+
+    }
+
+
+    public int getNumberOfTempSen(){
+        return TempSen;
+    }
+
+    public int getNumberOfFlowSen(){
+        return FlowSen;
+    }
+
+    public int getNumberOfPresSen(){
+        return PresSen;
+    }
+
+    public void save(){
+        //We can make the saving in sql library here to make it more managable in the main loop.
+    }
 
 }
