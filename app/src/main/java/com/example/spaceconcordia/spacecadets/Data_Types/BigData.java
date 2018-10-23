@@ -1,16 +1,13 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
-
-
-
 public class BigData {
     private static int TempSen = 14;
     private static int FlowSen = 2;
     private static int PresSen = 13;
 
-    public Temperature Temp_Sensor_List[];
-    public Flow_Sensor Flow_Sensor_List[];
-    public Pressure_Sensor Pressure_Sensor_List[];
+    private Temperature Temp_Sensor_List[];
+    private Flow_Sensor Flow_Sensor_List[];
+    private Pressure_Sensor Pressure_Sensor_List[];
 
 
     public BigData(){
