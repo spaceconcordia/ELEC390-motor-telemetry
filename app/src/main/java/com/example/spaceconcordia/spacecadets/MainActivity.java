@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.BluetoothDialog;
-import com.example.spaceconcordia.spacecadets.Bluetooth.PacketParser;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 
 import org.w3c.dom.Text;
