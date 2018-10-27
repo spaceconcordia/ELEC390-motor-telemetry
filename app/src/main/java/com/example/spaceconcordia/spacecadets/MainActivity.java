@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.BoringLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDialog BTdialog;
     private BTthread RocketThread;
     private Handler writeHandler;
+    Boolean BTconnected;
 
     public MainActivity() {
     }
@@ -57,17 +59,25 @@ public class MainActivity extends AppCompatActivity {
         launchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO what happens when the launch button is clicked
+                if(BTconnected) {
+                    Message msg = Message.obtain();
+                    msg.obj = "START";
+                    writeHandler.sendMessage(msg);
+                }
             }
         });
 
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO what happens when the emergency stop button is clicked
+                if(BTconnected) {
+                    Message msg = Message.obtain();
+                    msg.obj = "X";
+                    writeHandler.sendMessage(msg);
+                }
             }
         });
-
+        BTconnected = false;
         BluetoothSelect(); // Initial bluetooth connection
 
     }
@@ -199,9 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-
             writeHandler = RocketThread.getWriteHandler();
+            BTconnected = true;
             RocketThread.start();
         }
 
