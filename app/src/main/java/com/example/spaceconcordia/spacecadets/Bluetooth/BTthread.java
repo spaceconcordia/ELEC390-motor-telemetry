@@ -18,10 +18,17 @@ public class BTthread extends Thread {
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
+
+    private  Handler readHandler;
+    private  Handler writeHandler;
+
+    private static final char DELIMITER = '\n';
+    private String rx_buffer = "";
+
     /**
      Background Thread that handle the bluetooth reception and transmission
      **/
-    public BTthread(BluetoothSocket socket) {
+    public BTthread(BluetoothSocket socket, Handler handler) {
 
         mmSocket = socket;
         InputStream tmpIn = null;
@@ -36,35 +43,109 @@ public class BTthread extends Thread {
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
+
+        this.readHandler = handler;
+
+        writeHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                write((String) message.obj);
+            }
+        };
+
+    }
+
+    private String read() {
+
+        String s = "";
+
+        try {
+            // Check if there are bytes available
+            if (mmInStream.available() > 0) {
+
+                // Read bytes into a buffer
+                byte[] inBuffer = new byte[1024];
+                int bytesRead = mmInStream.read(inBuffer);
+
+                // Convert read bytes into a string
+                s = new String(inBuffer, "ASCII");
+                s = s.substring(0, bytesRead);
+            }
+
+        } catch (Exception e) {
         }
 
+        return s;
+    }
+
+
+
     public void run() {
-        byte[] buffer = new byte[1024];  // buffer store for the stream
-        int bytes; // bytes returned from read()
 
-        // Keep listening to the InputStream until an exception occurs
+        // Loop continuously, reading data, until thread.interrupt() is called
+        while (!this.isInterrupted()) {
 
-
-        while (true) {
-
-            try {
-                // Read from the InputStream
-                bytes = mmInStream.read(buffer); //byte counter
-
-
-            } catch (IOException e) {
+            // Make sure things haven't gone wrong
+            if ((mmInStream == null) || (mmOutStream == null)) {
                 break;
             }
 
+            // Read data and add it to the buffer
+            String s = read();
+            if (s.length() > 0)
+                rx_buffer += s;
 
+            // Look for complete messages
+            parseMessages();
         }
+
+        // If thread is interrupted, close connections
+        cancel();
+        sendToReadHandler("DISCONNECTED");
+
     }
 
     /* Call this from the main activity to send data to the remote device */
-    public void Transmit(byte[] bytes) {
+    private void write(String s) {
+
         try {
-            mmOutStream.write(bytes);
-        } catch (IOException e) { }
+            // Add the delimiter
+            s += DELIMITER;
+
+            // Convert to bytes and write
+            mmOutStream.write(s.getBytes());
+
+        } catch (Exception e) {
+        }
+    }
+
+    private void parseMessages() {
+
+        // Find the first delimiter in the buffer
+        int inx = rx_buffer.indexOf(DELIMITER);
+
+        // If there is none, exit
+        if (inx == -1)
+            return;
+
+        // Get the complete message
+        String s = rx_buffer.substring(0, inx);
+
+        // Remove the message from the buffer
+        rx_buffer = rx_buffer.substring(inx + 1);
+
+        // Send to read handler
+        sendToReadHandler(s);
+
+        // Look for more complete messages
+        parseMessages();
+    }
+
+    private void sendToReadHandler(String s) {
+
+        Message msg = Message.obtain();
+        msg.obj = s;
+        readHandler.sendMessage(msg);
     }
 
     /* Call this from the main activity to shutdown the connection */
@@ -74,6 +155,8 @@ public class BTthread extends Thread {
         } catch (IOException e) { }
     }
 
-
+    public Handler getWriteHandler() {
+        return writeHandler;
+    }
 
 }

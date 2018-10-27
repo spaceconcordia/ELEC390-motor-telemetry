@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter LocalBluetoothAdapter;
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
+    private BTthread RocketThread;
+    private Handler writeHandler;
 
     public MainActivity() {
     }
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             BTrocket = device;
             BTdialog.dismiss();
             ConnectThread BTthread = new ConnectThread(BTrocket);
-            BTthread.start();
+            BTthread.run();
         }
 
         protected void BluetoothSelect(){
@@ -175,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 mmSocket.connect();
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
-              //  Toast.makeText(MainActivity.this, "Unable to Connect", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Unable to Connect", Toast.LENGTH_SHORT).show();
 
                 try {
                     mmSocket.close();
@@ -185,8 +187,21 @@ public class MainActivity extends AppCompatActivity {
 /*
             // Do work to manage the connection (in a separate thread)
             manageConnectedSocket(mmSocket);*/
-           // Toast.makeText(MainActivity.this, "Connection Successful", Toast.LENGTH_SHORT).show();
-            BTthread RocketThread = new BTthread(mmSocket);
+            Toast.makeText(MainActivity.this, "Connection Successful", Toast.LENGTH_SHORT).show();
+            RocketThread = new BTthread(mmSocket, new Handler() {
+
+                @Override
+                public void handleMessage(Message message) {
+
+                    String s = (String) message.obj;
+                    Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+
+
+                }
+            });
+
+
+            writeHandler = RocketThread.getWriteHandler();
             RocketThread.start();
         }
 
