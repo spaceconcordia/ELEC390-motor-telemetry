@@ -30,55 +30,14 @@ public class BigData {
 
         // To HERE
     }
-    private short sensors[]; // TEMPORARY ARRAY, replace with the proper one
+  //  private short sensors[]; // TEMPORARY ARRAY, replace with the proper one
 
         public void parse (String Packet) {
 
 
-            int i; // Sensors index
-            int inx;
-            String PacketBuffer = Packet;
-
-            for (i = 0; i < 29; i++) {
-
-                inx = PacketBuffer.indexOf("-");
-
-                // If there is none, exit
-                if (inx == -1)
-                    return;
-
-                // Get the complete message
-                String s = PacketBuffer.substring(0, inx);
-                if (i < 14) {
-
-                    sensors[i] = Short.parseShort(s);
-                    /** 14 Temp sensors
-                     *
-                     * i = 0-13
-                     */
-
-                } else if (i < 16) {
-                    sensors[i] = Short.parseShort(s);
-                    ///
-                    /** 2 flow sensors
-                     *
-                     * i = 14-15
-                     */
-
-                } else {
-                    sensors[i] = Short.parseShort(s);
-
-                    /** 13 Pressure sensors
-                     * i = 16-28
-                     */
-
-                }
-                // Remove the message from the buffer
-                PacketBuffer = PacketBuffer.substring(inx + 1);
             }
-        }
 
-    }
+        }
 
 
 
