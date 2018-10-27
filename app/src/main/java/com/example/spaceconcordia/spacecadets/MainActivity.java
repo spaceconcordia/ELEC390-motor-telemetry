@@ -24,6 +24,8 @@ import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.BluetoothDialog;
+import com.example.spaceconcordia.spacecadets.Bluetooth.PacketParser;
+import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private Handler writeHandler;
     Boolean BTconnected;
 
+    //PRESENT DATA
+    private BigData PresentData;
     public MainActivity() {
     }
 
@@ -79,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         });
         BTconnected = false;
         BluetoothSelect(); // Initial bluetooth connection
-
     }
 
 
@@ -204,8 +207,15 @@ public class MainActivity extends AppCompatActivity {
                 public void handleMessage(Message message) {
 
                     String s = (String) message.obj;
-                    Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+                    PresentData.parse(s);
 
+                    /** Bluetooth Packet received handle action
+                     *
+                     *
+                     *
+                     *
+                     *
+                     */
 
                 }
             });
