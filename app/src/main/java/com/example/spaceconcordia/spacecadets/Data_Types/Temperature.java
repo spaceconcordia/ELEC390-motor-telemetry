@@ -9,7 +9,7 @@ public class Temperature {
     private String name; //name of the sensor. can be its location on rocket also
 
     //this is a first constructor so if we forget to input a max value, it assigns one
-    private Temperature(){
+    public Temperature(){
         Value = 0;
         Average = 0;
         Alert = false;

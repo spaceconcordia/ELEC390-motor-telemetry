@@ -18,6 +18,14 @@ public class BigData {
         Flow_Sensor_List = new Flow_Sensor[FlowSen];
         Pressure_Sensor_List = new Pressure_Sensor[PresSen];
 
+        for(int i = 0; i<TempSen; i++){
+            Temp_Sensor_List[i] = new Temperature();
+        }        for(int i = 0; i<FlowSen;i++){
+            Flow_Sensor_List[i] = new Flow_Sensor();
+        }        for(int i = 0; i<PresSen; i++) {
+            Pressure_Sensor_List[i] = new Pressure_Sensor();
+        }
+
         // if all the sensors use the same max and min values, then we need to change them once
         // in their own class. But if there are sensors that have their own min and max requirements
         // we can easily initiate them here, all we need to do is add another constructor.
@@ -40,6 +48,16 @@ public class BigData {
         String[] Sensors = Packet.split(Pattern.quote("-"));
 
         if (Sensors.length == 29){ // Reject the packet if there is not 29 sensors count in it
+
+
+            for(int i = 0; i<TempSen; i++){
+                Temp_Sensor_List[i].UpdateValue(Short.parseShort(Sensors[i],16));
+            }        for(int i = 0; i<FlowSen;i++){
+                Flow_Sensor_List[i].UpdateValue(Short.parseShort(Sensors[i+TempSen],16));
+            }        for(int i = 0; i<PresSen; i++) {
+                Pressure_Sensor_List[i].UpdateValue(Short.parseShort(Sensors[i+TempSen+FlowSen],16));
+            }
+
             /**
              *
              * Temperature[0] = Short.parseShort(Sensors[0],16); // This convert the HEX string to short

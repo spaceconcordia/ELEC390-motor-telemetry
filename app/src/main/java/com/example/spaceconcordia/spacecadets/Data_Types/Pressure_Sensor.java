@@ -11,7 +11,7 @@ public class Pressure_Sensor {
     private String name;
 
 
-    private Pressure_Sensor(){
+    public Pressure_Sensor(){
         Value = 0;
         Average = 0;
         Max_Value = 500; // change this value to actual max psi of system. if we forget to enter at least we have it
