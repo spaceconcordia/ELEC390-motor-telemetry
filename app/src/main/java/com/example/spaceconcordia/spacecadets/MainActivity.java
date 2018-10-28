@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
     private Handler writeHandler;
-    private Boolean BTconnected;
     private TextView RawPacket;
     private TextView SensorsCount;
 
@@ -47,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private BTthread RocketThread; //Actual bluetooth thread
     private OfflineTestThread OfflineThread; // This thread is for offline (Emulator) testing
 
-
+    private Boolean BTconnected;
+    private Boolean OfflineThreadActivated;
 
     //PRESENT DATA
     private BigData PresentData;
@@ -67,13 +67,13 @@ public class MainActivity extends AppCompatActivity {
         launchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(BTconnected) {
+
 
                     // Action of launch button
 
                     Message msg = Message.obtain();
-                    msg.obj = "START";
+                    msg.obj = "S";
                     writeHandler.sendMessage(msg);
                 }
             }
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         BTconnected = false;
+        OfflineThreadActivated = false;
         PresentData = new BigData(); // Initialize PresentData
 
         BluetoothSelect(); // Initial bluetooth connection
@@ -153,6 +154,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void BluetoothSelect(){
+
+            //Stop all existing threads
+            if(BTconnected) {
+                RocketThread.KillThread();
+                BTconnected = false;
+            }
+            if(OfflineThreadActivated) {
+                OfflineThread.KillThread();
+                OfflineThreadActivated = false;
+            }
 
             LocalBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -257,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        BTconnected = false;
+        OfflineThreadActivated = true;
         OfflineThread.start();
         Toast.makeText(MainActivity.this, "Offline Thread Started", Toast.LENGTH_SHORT).show();
 

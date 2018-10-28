@@ -12,7 +12,7 @@ import java.util.Random;
 public class OfflineTestThread extends Thread {
 
     private int SLEEPTIME = 100;
-
+    private boolean stop;
     private  Handler readHandler;
 
     /**
@@ -21,14 +21,14 @@ public class OfflineTestThread extends Thread {
     public OfflineTestThread(Handler handler) {
 
         this.readHandler = handler;
-
+        stop = false;
     }
 
 
     public void run() {
 
         // Loop continuously, reading data, until thread.interrupt() is called
-        while (!this.isInterrupted()) {
+        while (!this.isInterrupted() && !stop) {
 
             try {
                 Thread.sleep(SLEEPTIME);
@@ -51,7 +51,7 @@ public class OfflineTestThread extends Thread {
             sendToReadHandler(s);
         }
 
-       // sendToReadHandler("DISCONNECTED");
+        sendToReadHandler("Offline Thread Stopped");
 
     }
 
@@ -62,4 +62,9 @@ public class OfflineTestThread extends Thread {
         msg.obj = s;
         readHandler.sendMessage(msg);
     }
+
+    public void KillThread(){
+        stop = true;
+    }
+
 }

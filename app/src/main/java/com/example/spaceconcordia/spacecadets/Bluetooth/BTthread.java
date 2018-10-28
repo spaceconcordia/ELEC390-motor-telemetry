@@ -22,6 +22,8 @@ public class BTthread extends Thread {
     private  Handler readHandler;
     private  Handler writeHandler;
 
+    private boolean stop;
+
     private static final char DELIMITER = '\n';
     private String rx_buffer = "";
 
@@ -33,6 +35,7 @@ public class BTthread extends Thread {
         mmSocket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
+        stop = false;
 
         // Get the input and output streams, using temp objects because
         // member streams are final
@@ -83,7 +86,7 @@ public class BTthread extends Thread {
     public void run() {
 
         // Loop continuously, reading data, until thread.interrupt() is called
-        while (!this.isInterrupted()) {
+        while (!this.isInterrupted() && !stop) {
 
             // Make sure things haven't gone wrong
             if ((mmInStream == null) || (mmOutStream == null)) {
@@ -157,6 +160,10 @@ public class BTthread extends Thread {
 
     public Handler getWriteHandler() {
         return writeHandler;
+    }
+
+    public void KillThread(){
+        stop = true;
     }
 
 }
