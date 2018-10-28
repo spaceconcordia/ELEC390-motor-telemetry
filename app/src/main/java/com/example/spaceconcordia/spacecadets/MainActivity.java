@@ -5,11 +5,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.BoringLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,15 +16,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+
 import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.BluetoothDialog;
+import com.example.spaceconcordia.spacecadets.Bluetooth.OfflineTestThread;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -42,12 +38,21 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter LocalBluetoothAdapter;
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
-    private BTthread RocketThread;
     private Handler writeHandler;
-    Boolean BTconnected;
+    private Boolean BTconnected;
+    private TextView RawPacket;
+    private TextView SensorsCount;
+
+    //Bluetooth Thread
+    private BTthread RocketThread; //Actual bluetooth thread
+    private OfflineTestThread OfflineThread; // This thread is for offline (Emulator) testing
+
+
 
     //PRESENT DATA
     private BigData PresentData;
+
+
     public MainActivity() {
     }
 
@@ -62,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         launchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(BTconnected) {
+
+                    // Action of launch button
+
                     Message msg = Message.obtain();
                     msg.obj = "START";
                     writeHandler.sendMessage(msg);
@@ -74,14 +83,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(BTconnected) {
+
+                    //Action of Emergency Stop Button
+
                     Message msg = Message.obtain();
                     msg.obj = "X";
                     writeHandler.sendMessage(msg);
                 }
             }
         });
+
         BTconnected = false;
+        PresentData = new BigData(); // Initialize PresentData
+
         BluetoothSelect(); // Initial bluetooth connection
+        RawPacket = findViewById(R.id.RawPacket);
+        SensorsCount = findViewById(R.id.SensorsCount);
     }
 
 
@@ -142,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
             if (LocalBluetoothAdapter == null) {
                 //Emulator cannot handle Bluetooth
                 Toast.makeText(this, R.string.Toast_Emulator, Toast.LENGTH_LONG).show();
+                OfflineThreadStarter();
             } else {
                 //Check if bluetooth is turned on
                 if (!LocalBluetoothAdapter.isEnabled()) {
@@ -174,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 // MY_UUID is the app's UUID string, also used by the server code
                 tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
             } catch (IOException e) { }
+
             mmSocket = tmp;
           //  Toast.makeText(MainActivity.this, "MM SOCKET FIX", Toast.LENGTH_SHORT).show();
 
@@ -205,16 +224,10 @@ public class MainActivity extends AppCompatActivity {
                 public void handleMessage(Message message) {
 
                     String s = (String) message.obj;
-                    PresentData.parse(s);
-
-                    /** Bluetooth Packet received handle action
-                     *
-                     *
-                     *
-                     *
-                     *
-                     */
-
+                    //PresentData.parse(s);
+                    if (!s.isEmpty()) {
+                        packethandler(s);
+                    }
                 }
             });
             writeHandler = RocketThread.getWriteHandler();
@@ -230,6 +243,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void OfflineThreadStarter() {
+
+        OfflineThread = new OfflineTestThread( new Handler() {
+
+            @Override
+            public void handleMessage(Message message) {
+
+                String s = (String) message.obj;
+                //PresentData.parse(s);
+                if (!s.isEmpty()) {
+                    packethandler(s);
+                }
+            }
+        });
+        BTconnected = false;
+        OfflineThread.start();
+        Toast.makeText(MainActivity.this, "Offline Thread Started", Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void packethandler(String packet){
+
+        /**
+         *
+         * This function is called each time a packet is received!
+         *
+         */
+        int Nbsensors = PresentData.parse(packet); // this function parse the packet
+        RawPacket.setText(packet);
+        SensorsCount.setText("Nb of sensors : " + String.valueOf(Nbsensors));
+    }
 
 
     }

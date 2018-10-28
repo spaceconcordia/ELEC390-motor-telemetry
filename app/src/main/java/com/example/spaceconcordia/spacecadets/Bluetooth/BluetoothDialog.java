@@ -71,6 +71,7 @@ public class BluetoothDialog extends DialogFragment{
            @Override
            public void onClick(View view) {
                Toast.makeText(getContext(), "Stand Alone Mode", Toast.LENGTH_LONG).show();
+               ((MainActivity) getActivity()).OfflineThreadStarter();
                getDialog().dismiss();
                }
        });
@@ -96,7 +97,4 @@ public class BluetoothDialog extends DialogFragment{
    public void passBTadapter(BluetoothAdapter BTadapter){
        LocalBluetoothAdapter = BTadapter;
    }
-    public String GetSelectedBluetoothAdapter(){
-        return SelectedBluetoothAdapter;
-    }
 }
