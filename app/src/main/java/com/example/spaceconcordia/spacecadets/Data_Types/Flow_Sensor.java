@@ -9,7 +9,7 @@ public class Flow_Sensor {
     private boolean Alert;
     private String name;
 
-    private Flow_Sensor(){
+    public Flow_Sensor(){
         Value = 0;
         Average = 0;
         Max_Value = 100; //Change these values to proper ones please
