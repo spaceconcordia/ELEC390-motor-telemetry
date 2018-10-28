@@ -17,7 +17,7 @@ public class Flow_Sensor {
         Alert = false;
     }
 
-    private Flow_Sensor(String name){
+    public Flow_Sensor(String name){
         name=this.name;
         Value = 0;
         Average = 0;
