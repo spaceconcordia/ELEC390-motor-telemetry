@@ -45,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
     private BTthread RocketThread;
     private Handler writeHandler;
     Boolean BTconnected;
+    private TextView RawPacket;
+    private TextView SensorsCount;
+
 
     //PRESENT DATA
     private BigData PresentData;
+
+
     public MainActivity() {
     }
 
@@ -62,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         launchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(BTconnected) {
+
+                    // Action of launch button
+
                     Message msg = Message.obtain();
                     msg.obj = "START";
                     writeHandler.sendMessage(msg);
@@ -74,14 +83,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(BTconnected) {
+
+                    //Action of Emergency Stop Button
+
                     Message msg = Message.obtain();
                     msg.obj = "X";
                     writeHandler.sendMessage(msg);
                 }
             }
         });
+
         BTconnected = false;
+        PresentData = new BigData(); // Initialize PresentData
+
         BluetoothSelect(); // Initial bluetooth connection
+        RawPacket = findViewById(R.id.RawPacket);
+        SensorsCount = findViewById(R.id.SensorsCount);
     }
 
 
@@ -206,15 +223,21 @@ public class MainActivity extends AppCompatActivity {
                 public void handleMessage(Message message) {
 
                     String s = (String) message.obj;
-                    PresentData.parse(s);
+                    //PresentData.parse(s);
+                    if (!s.isEmpty()) {
 
-                    /** Bluetooth Packet received handle action
-                     *
-                     *
-                     *
-                     *
-                     *
-                     */
+                        /**
+                         *
+                         * Bluetooth Packet received handle action ------------------------------------
+                         *
+                         */
+                        int Nbsensors = PresentData.parse(s); // this function parse the packet
+                        RawPacket.setText(s);
+                        SensorsCount.setText("Nb of sensors : " + String.valueOf(Nbsensors));
+
+                    }
+
+
 
                 }
             });
