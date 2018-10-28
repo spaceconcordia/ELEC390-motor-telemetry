@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button launchButton;
     private Button emergencyStopButton;
-    private MenuItem screenSelectButton;
+    private MenuItem sensorSelectButton;
     private MenuItem BluetoothConnectButton;
 
     //Bluetooth
@@ -91,16 +91,15 @@ public class MainActivity extends AppCompatActivity {
         public boolean onCreateOptionsMenu (Menu menu){
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu, menu);
-            screenSelectButton = menu.findItem(R.id.screenSelectActionButton);
+            sensorSelectButton = menu.findItem(R.id.screenSelectActionButton);
 
-            screenSelectButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            sensorSelectButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-//                Intent intent = new Intent(MainActivity.this, ScreenSelectDialog.class);
-//                startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, SingleSensorSelectActivity.class);
+                    startActivity(intent);
 
-                    ScreenSelectDialog dialog = new ScreenSelectDialog();
-                    dialog.show(getSupportFragmentManager(), "Select Display Mode");
+
                     return false;
                 }
 

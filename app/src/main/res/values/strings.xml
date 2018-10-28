@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">SpaceCadets</string>
-    <string name="display_modes">Display Modes</string>
-    <string name="action_sensor_select">Display Mode</string>
+    <string name="action_sensor_select">Sensors</string>
+    <string name="cancel_button_content">Cancel</string>
     <string name="title_activity_single_sensor_select">Single-Sensor Select</string>
-    <string name="title_activity_multi_sensor_select">Multi-Sensor Select</string>
-    <string name="title_activity_overlay_sensor_select">Overlay Multi-Sensor Select</string>
     <string name="Title_Bluetooth_dialog">Select the Rocket Engine bluetooth adapter</string>
     <string name="Button_Bluetooth_dialog_testing">Standalone testing</string>
     <string name="Toast_Emulator">Emulator cannot handle Bluetooth</string>

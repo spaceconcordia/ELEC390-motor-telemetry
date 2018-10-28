@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".SingleSensorDisplayActivity">
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/sensorDisplayGraph"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </RelativeLayout>
