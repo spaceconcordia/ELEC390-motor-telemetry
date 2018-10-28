@@ -20,14 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SingleSensorSelectActivity" />
-        <activity
-            android:name=".MultiSensorSelectActivity"
-            android:label="@string/title_activity_multi_sensor_select"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OverlaySensorSelectActivity" />
         <activity android:name=".SingleSensorDisplayActivity" />
-        <activity android:name=".MultiSensorDisplayActivity" />
-        <activity android:name=".OverlaySensorDisplayActivity"></activity>
     </application>
 
 

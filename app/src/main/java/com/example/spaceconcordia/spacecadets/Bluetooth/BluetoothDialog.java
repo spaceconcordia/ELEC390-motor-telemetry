@@ -3,6 +3,7 @@ package com.example.spaceconcordia.spacecadets.Bluetooth;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
+import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -33,6 +34,7 @@ public class BluetoothDialog extends DialogFragment{
     private static String SelectedBluetoothAdapter;
     ArrayList<String> Name;
     ArrayList<String> Address;
+    BluetoothDevice BTrocket;
 
     public BluetoothDialog(){
         SelectedBluetoothAdapter = "test";
@@ -45,7 +47,7 @@ public class BluetoothDialog extends DialogFragment{
         Bluetooth_Listview = view.findViewById(R.id.Bluetooth_Dialog_Listview);
 
 
-            Set<BluetoothDevice> pairedDevices = LocalBluetoothAdapter.getBondedDevices();
+        final Set<BluetoothDevice> pairedDevices = LocalBluetoothAdapter.getBondedDevices();
 
             if (!pairedDevices.isEmpty()) {
 
@@ -69,6 +71,7 @@ public class BluetoothDialog extends DialogFragment{
            @Override
            public void onClick(View view) {
                Toast.makeText(getContext(), "Stand Alone Mode", Toast.LENGTH_LONG).show();
+               ((MainActivity) getActivity()).OfflineThreadStarter();
                getDialog().dismiss();
                }
        });
@@ -77,6 +80,13 @@ public class BluetoothDialog extends DialogFragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SelectedBluetoothAdapter = Address.get(position);
                 Toast.makeText(getActivity(), SelectedBluetoothAdapter, Toast.LENGTH_LONG).show();
+                //Call the Bluetooth Connection Chain on main Activity
+                for (BluetoothDevice device : pairedDevices) {
+                    if (device.getAddress().equals(SelectedBluetoothAdapter)) {
+                        ((MainActivity) getActivity()).setBTrocket(device);
+                    }
+                }
+
                 getDialog().dismiss();
             }
         });
@@ -87,7 +97,4 @@ public class BluetoothDialog extends DialogFragment{
    public void passBTadapter(BluetoothAdapter BTadapter){
        LocalBluetoothAdapter = BTadapter;
    }
-    public String GetSelectedBluetoothAdapter(){
-        return SelectedBluetoothAdapter;
-    }
 }
