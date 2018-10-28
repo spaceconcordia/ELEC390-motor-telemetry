@@ -19,7 +19,7 @@ public class Pressure_Sensor {
         Alert = false;
     }
 
-    private Pressure_Sensor(String name){
+    public Pressure_Sensor(String name){
         name=this.name;
         Value = 0;
         Average = 0;
