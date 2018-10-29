@@ -18,7 +18,7 @@ public class Temperature {
 
     //Constructor that creates a sensor in regards to its given name
     public Temperature(String name){
-        name=this.name;
+        this.name = name;
         Value = 0;
         Average = 0;
         Alert = false;

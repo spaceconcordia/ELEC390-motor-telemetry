@@ -18,7 +18,7 @@ public class Flow_Sensor {
     }
 
     public Flow_Sensor(String name){
-        name=this.name;
+        this.name = name;
         Value = 0;
         Average = 0;
         Max_Value = 100; //Change these values to proper ones please

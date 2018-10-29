@@ -7,23 +7,15 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/launchButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="175dp"
-        android:text="Launch" />
-
-    <Button
         android:id="@+id/emergencyStopButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="175dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="0dp"
         android:text="EMERGENCY STOP" />
 
     <TextView
@@ -43,5 +35,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="115dp"
         android:text="Nb of Sensors" />
+
+    <ListView
+        android:id="@+id/sensorListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="161dp" />
 
 </RelativeLayout>

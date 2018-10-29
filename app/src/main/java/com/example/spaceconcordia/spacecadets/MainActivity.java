@@ -12,27 +12,33 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.BluetoothDialog;
 import com.example.spaceconcordia.spacecadets.Bluetooth.OfflineTestThread;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
+import com.example.spaceconcordia.spacecadets.Data_Types.Pressure_Sensor;
 
 import java.io.IOException;
 
 /// Activity allows user to access launch and emergency stop buttons directly, and access to screenselectdialog
 public class MainActivity extends AppCompatActivity {
 
-    private Button launchButton;
+
     private Button emergencyStopButton;
-    private MenuItem sensorSelectButton;
+    private MenuItem launchButton;
     private MenuItem BluetoothConnectButton;
+    private ListView sensorListView;
 
     //Bluetooth
     private BluetoothAdapter LocalBluetoothAdapter;
@@ -62,22 +68,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupUI();
-
-        launchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(BTconnected) {
-
-
-                    // Action of launch button
-
-                    Message msg = Message.obtain();
-                    msg.obj = "S";
-                    writeHandler.sendMessage(msg);
-                }
-            }
-        });
+        this.setupUI();
 
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +84,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        sensorListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedSensor = (String) (sensorListView.getItemAtPosition(position));
+
+                Intent intent = new Intent(MainActivity.this, SingleSensorDisplayActivity.class);
+                intent.putExtra("sensorName", selectedSensor);
+                startActivity(intent);
+            }
+        });
+
         BTconnected = false;
         OfflineThreadActivated = false;
         PresentData = new BigData(); // Initialize PresentData
@@ -104,20 +106,25 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /// OnClickListener for the "Display Mode" button in the action bar
+    /// OnClickListeners for the Actionbar items
         @Override
         public boolean onCreateOptionsMenu (Menu menu){
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu, menu);
-            sensorSelectButton = menu.findItem(R.id.screenSelectActionButton);
+            launchButton = menu.findItem(R.id.screenSelectActionButton);
 
-            sensorSelectButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            launchButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = new Intent(MainActivity.this, SingleSensorSelectActivity.class);
-                    startActivity(intent);
+                    if(BTconnected) {
 
 
+                        // Action of launch button
+
+                        Message msg = Message.obtain();
+                        msg.obj = "S";
+                        writeHandler.sendMessage(msg);
+                    }
                     return false;
                 }
 
@@ -138,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void setupUI () {
-            this.launchButton = findViewById(R.id.launchButton);
             this.emergencyStopButton = findViewById(R.id.emergencyStopButton);
+            this.sensorListView = findViewById(R.id.sensorListView);
         }
 
         /***
@@ -284,10 +291,14 @@ public class MainActivity extends AppCompatActivity {
         int Nbsensors = PresentData.parse(packet); // this function parse the packet
         RawPacket.setText(packet);
         SensorsCount.setText("Nb of sensors : " + String.valueOf(Nbsensors));
+
+        // Display the sensors in a listview
+        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
+        sensorListView.setAdapter(adapter);
+
     }
 
-
-    }
+}
 
 
 
