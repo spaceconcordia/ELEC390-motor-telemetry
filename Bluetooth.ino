@@ -18,6 +18,9 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
+  
+short s;
+
 
             if (Serial1.available()) {
                   incomingByte = Serial1.read();
@@ -39,26 +42,14 @@ while(START && !STOP){
             digitalWrite(ledPin, HIGH);   
             }
             
-short t[13];
-short f[1];
-short p[12];
 
-t[0] = random (0,10000);
-Serial1.print(t[0]);
-  for (int i=1;i<14;i++){
-    t[i] = random (0,10000);
+
+s = random (0,10000);
+Serial1.print(s,HEX);
+  for (int i=1;i<29;i++){
+    s = random (0,1000);
     Serial1.print("-");
-    Serial1.print(t[i],HEX);
-    }
-  for (int i=0;i<2;i++){
-    f[i] = random (0,10000);
-    Serial1.print("-");
-    Serial1.print(f[i],HEX);
-    }
-  for (int i=0;i<13;i++){
-    p[i] = random (0,10000);
-    Serial1.print("-");
-    Serial1.print(p[i],HEX);
+    Serial1.print(s,HEX);
     }
      Serial1.print("\n");
 
