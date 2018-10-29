@@ -10,7 +10,7 @@
         app:showAsAction="always"></item>
     <item
         android:id="@+id/screenSelectActionButton"
-        android:icon="@drawable/oc_sensor"
+        android:icon="@drawable/oc_launch"
         android:title="Sensors"
         app:showAsAction="always"></item>
 </menu>
