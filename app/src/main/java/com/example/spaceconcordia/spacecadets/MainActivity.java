@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
     private Handler writeHandler;
-    private TextView RawPacket;
-    private TextView SensorsCount;
 
     //Bluetooth Thread
     private BTthread RocketThread; //Actual bluetooth thread
@@ -100,8 +98,7 @@ public class MainActivity extends AppCompatActivity {
         PresentData = new BigData(); // Initialize PresentData
 
         BluetoothSelect(); // Initial bluetooth connection
-        RawPacket = findViewById(R.id.RawPacket);
-        SensorsCount = findViewById(R.id.SensorsCount);
+
     }
 
 
@@ -288,9 +285,7 @@ public class MainActivity extends AppCompatActivity {
          * This function is called each time a packet is received!
          *
          */
-        int Nbsensors = PresentData.parse(packet); // this function parse the packet
-        RawPacket.setText(packet);
-        SensorsCount.setText("Nb of sensors : " + String.valueOf(Nbsensors));
+        PresentData.parse(packet); // this function parse the packet
 
         // Display the sensors in a listview
         ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
