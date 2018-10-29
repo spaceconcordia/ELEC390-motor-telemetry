@@ -98,13 +98,14 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     }
 
-    //Todo method that returns list of temperature sensors
+    // method that returns list of temperature sensors
+
     public List<Temperature> getAllTemperatureSensors() {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = null;
         try {
 
-            cursor = sqLiteDatabase.query(TABLE_SENSORS,null,KEY_TYPE + "Temperature", null,null,null,null);
+            cursor = sqLiteDatabase.query(TABLE_SENSORS, null, KEY_TYPE + " = ?", new String[]{"Temperature"}, null, null, null, null);
 
 
             if (cursor != null)
@@ -134,12 +135,95 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     }
 
+
+    // method that returns list of pressure sensors
+
+    public List<Pressure_Sensor> getAllPressureSensors() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+
+            cursor = sqLiteDatabase.query(TABLE_SENSORS, null, KEY_TYPE + " = ?", new String[]{"Pressure"}, null, null, null, null);
+
+
+            if (cursor != null)
+                if (cursor.moveToFirst()) {
+                    List<Pressure_Sensor> pressure_sensor_list = new ArrayList<>();
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+                        String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+
+                        pressure_sensor_list.add(new Pressure_Sensor(name));
+                    } while (cursor.moveToNext());
+
+                    return pressure_sensor_list;
+                }
+
+        } catch (Exception e) {
+
+            Log.d(TAG, "Exception" + e.getMessage());
+            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            sqLiteDatabase.close();
+        }
+        return
+                Collections.emptyList();
+
+    }
+
+
+
+    // method that returns list of flow sensors
+
+    public List<Flow_Sensor> getAllFlowSensors() {
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+
+            cursor = sqLiteDatabase.query(TABLE_SENSORS,null,KEY_TYPE + " = ?", new String[]{"Flow"}, null,null,null,null);
+
+
+            if (cursor != null)
+                if (cursor.moveToFirst()) {
+                    List<Flow_Sensor> flow_sensor_list = new ArrayList<>();
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+                        String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+
+                        flow_sensor_list.add(new Flow_Sensor(name));
+                    } while (cursor.moveToNext());
+
+                    return flow_sensor_list;
+                }
+
+        } catch (Exception e) {
+
+            Log.d(TAG, "Exception" + e.getMessage());
+            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            sqLiteDatabase.close();
+        }
+        return
+                Collections.emptyList();
+
+    }
+
 }
 
 
-    //Todo method that returns list of pressure sensors
 
-    //Todo method that returns list of flow sensors
+
+
+
+
+
+
+
+
 
 
 
