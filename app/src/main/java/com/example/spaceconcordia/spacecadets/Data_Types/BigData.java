@@ -6,18 +6,22 @@ public class BigData {
     private static int TempSen = 14;
     private static int FlowSen = 2;
     private static int PresSen = 13;
+    private int NbSensors = TempSen + FlowSen + PresSen;
 
     private Temperature Temp_Sensor_List[];
     private Flow_Sensor Flow_Sensor_List[];
     private Pressure_Sensor Pressure_Sensor_List[];
     private String All_Sensor_List[];
 
+    private char EngineStatus;
 
     public BigData() {
 
         Temp_Sensor_List = new Temperature[TempSen];
         Flow_Sensor_List = new Flow_Sensor[FlowSen];
         Pressure_Sensor_List = new Pressure_Sensor[PresSen];
+
+        EngineStatus = 'D';
 
         for(int i = 0; i<TempSen; i++){
 
@@ -50,40 +54,49 @@ public class BigData {
      * The packet are in hexadecimals and values are separated by '-'
      * 29 sensors in order : Temperature sensors 0-13 - flow sensors 14-15 - Pressure sensors 16-28
      */
-    public int parse(String Packet) {
+    public char parse(String Packet) {
 
-        String[] Sensors = Packet.split(Pattern.quote("-"));
+        String[] PacketParts = Packet.split(Pattern.quote("-"));
 
-        if (Sensors.length == 29){ // Reject the packet if there is not 29 sensors count in it
+         if (PacketParts.length == NbSensors + 1) { // Reject the packet if there is not 29+1 sensors count in it
 
-            All_Sensor_List = new String[Sensors.length];
+                //First PacketPart is controller status
+                if (!PacketParts[0].isEmpty()) {
+                    EngineStatus = PacketParts[0].charAt(0);
+                }
 
-            for(int i = 0; i<TempSen; i++){
-                Temp_Sensor_List[i].UpdateValue(Short.parseShort(Sensors[i],16));
-                All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current Value: " + Temp_Sensor_List[i].GetValue();
-            }        for(int i = 0; i<FlowSen;i++){
-                Flow_Sensor_List[i].UpdateValue(Short.parseShort(Sensors[i+TempSen],16));
-                All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current Value: " + Flow_Sensor_List[i].GetValue();
-            }        for(int i = 0; i<PresSen; i++) {
-                Pressure_Sensor_List[i].UpdateValue(Short.parseShort(Sensors[i+TempSen+FlowSen],16));
-                All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current Value: " + Pressure_Sensor_List[i].GetValue();
+
+                All_Sensor_List = new String[PacketParts.length];
+
+                for (int i = 0; i < TempSen; i++) {
+                    Temp_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
+                    All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current Value: " + Temp_Sensor_List[i].GetValue();
+                }
+                for (int i = 0; i < FlowSen; i++) {
+                    Flow_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + 1], 16));
+                    All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current Value: " + Flow_Sensor_List[i].GetValue();
+                }
+                for (int i = 0; i < PresSen; i++) {
+                    Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
+                    All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current Value: " + Pressure_Sensor_List[i].GetValue();
+                }
+
+                /**
+                 *
+                 * Temperature[0] = Short.parseShort(Sensors[0],16); // This convert the HEX string to short
+                 * ...
+                 * Temperature[13] =Short.parseShort(Sensors[13],16);
+                 * Flow_Sensor[0] = Short.parseShort(Sensors[14],16);
+                 * Flow_Sensor[1] = Short.parseShort(Sensors[15],16);
+                 * Pressure_Sensor[0]  = Short.parseShort(Sensors[16],16);
+                 * ...
+                 * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
+                 */
+
+             return EngineStatus;
             }
 
-            /**
-             *
-             * Temperature[0] = Short.parseShort(Sensors[0],16); // This convert the HEX string to short
-             * ...
-             * Temperature[13] =Short.parseShort(Sensors[13],16);
-             * Flow_Sensor[0] = Short.parseShort(Sensors[14],16);
-             * Flow_Sensor[1] = Short.parseShort(Sensors[15],16);
-             * Pressure_Sensor[0]  = Short.parseShort(Sensors[16],16);
-             * ...
-             * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
-             */
-
-        }
-
-        return Sensors.length;
+        return 'B';
     }
 
 }

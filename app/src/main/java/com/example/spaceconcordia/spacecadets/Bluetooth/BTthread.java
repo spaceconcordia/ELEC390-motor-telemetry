@@ -27,6 +27,10 @@ public class BTthread extends Thread {
     private static final char DELIMITER = '\n';
     private String rx_buffer = "";
 
+    private int PingTime = 250; //Ping time in ms
+    private long CurrentTime = 0;
+    private long LastPingTime = 0;
+
     /**
      Background Thread that handle the bluetooth reception and transmission
      **/
@@ -88,9 +92,17 @@ public class BTthread extends Thread {
         // Loop continuously, reading data, until thread.interrupt() is called
         while (!this.isInterrupted() && !stop) {
 
+
             // Make sure things haven't gone wrong
             if ((mmInStream == null) || (mmOutStream == null)) {
                 break;
+            }
+
+            //Ping Connection check code
+            CurrentTime = System.currentTimeMillis();
+            if (CurrentTime > LastPingTime + PingTime){
+                write("P");
+                LastPingTime = CurrentTime;
             }
 
             // Read data and add it to the buffer

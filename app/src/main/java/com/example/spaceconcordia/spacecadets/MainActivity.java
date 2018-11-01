@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem launchButton;
     private MenuItem BluetoothConnectButton;
     private ListView sensorListView;
+    private TextView BTstatusText;
 
     //Bluetooth
     private BluetoothAdapter LocalBluetoothAdapter;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     //PRESENT DATA
     private BigData PresentData;
-
+    private char CurrentStatus;
 
     public MainActivity() {
     }
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         protected void setupUI () {
             this.emergencyStopButton = findViewById(R.id.emergencyStopButton);
             this.sensorListView = findViewById(R.id.sensorListView);
+            this.BTstatusText = findViewById(R.id.BTStatusTextview);
         }
 
         /***
@@ -285,12 +287,37 @@ public class MainActivity extends AppCompatActivity {
          * This function is called each time a packet is received!
          *
          */
-        PresentData.parse(packet); // this function parse the packet
+        CurrentStatus = PresentData.parse(packet); // this function parse the packet
+
+        switch (CurrentStatus){
+            case 'B':
+                BTstatusText.setText("Bad Packet");
+                break;
+            case 'I':
+                BTstatusText.setText("Idle");
+                break;
+            case 'F':
+                BTstatusText.setText("Fired");
+                break;
+            case 'X':
+                BTstatusText.setText("Emergency Stop");
+                break;
+            case 'x':
+                BTstatusText.setText("Disconnection Stop");
+                break;
+            case 'S':
+                BTstatusText.setText("Simulated");
+                break;
+            case 'D':
+                BTstatusText.setText("Bad connection");
+                break;
+        }
 
         // Display the sensors in a listview
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
-        sensorListView.setAdapter(adapter);
-
+        if (CurrentStatus != 'B') { // refresh display if the packet was bad!
+            ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
+            sensorListView.setAdapter(adapter);
+        }
     }
 
 }

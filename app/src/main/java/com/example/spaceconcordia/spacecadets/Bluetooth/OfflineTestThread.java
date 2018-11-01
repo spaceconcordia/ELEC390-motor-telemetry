@@ -14,6 +14,9 @@ public class OfflineTestThread extends Thread {
     private int SLEEPTIME = 100;
     private boolean stop;
     private  Handler readHandler;
+    private Random r;
+    private int NextRandom;
+
 
     /**
      Background Thread that Simulate Bluetooth reception and transmission
@@ -38,10 +41,9 @@ public class OfflineTestThread extends Thread {
             //String s = "445‑A90‑21B2‑E15‑2281‑1147‑140E‑1550‑2023‑70B‑F45‑D71‑139A‑FA4‑14C7‑1F40‑E04‑15B7‑A84‑13E4‑15C7‑1FD0‑1A5F‑1FD2‑171‑2164‑2113‑5E1‑2233";
 
 
-            Random r = new Random();
-            int NextRandom = r.nextInt(1000);
-            String s = Integer.toHexString(NextRandom);
-       for (int i=1;i<29;i++){
+            r = new Random();
+            String s = "S";
+       for (int i=0;i<29;i++){
            NextRandom = r.nextInt(1000);
            s = s.concat("-");
         s = s.concat(Integer.toHexString(NextRandom));

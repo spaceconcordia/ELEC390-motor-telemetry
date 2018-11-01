@@ -8,22 +8,6 @@
 
 
 
-
-
-    <TableRow
-        android:id="@+id/sensorListView_Row"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/emergencyStopButton"
-        android:layout_marginBottom="0dp">
-
-        <ListView
-            android:id="@+id/sensorListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
-    </TableRow>
-
     <Button
         android:id="@+id/emergencyStopButton"
         android:layout_width="match_parent"
@@ -36,5 +20,39 @@
         android:layout_marginBottom="0dp"
         android:background="@android:color/holo_red_dark"
         android:text="EMERGENCY STOP" />
+
+    <TableRow
+        android:id="@+id/Status_Row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sensorListView_Row"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginBottom="-24dp">
+
+        <TextView
+            android:id="@+id/BTStatusTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disconnected"
+            android:textSize="20dp" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/sensorListView_Row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/emergencyStopButton"
+        android:layout_marginTop="24dp">
+        <ListView
+            android:id="@+id/sensorListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </TableRow>
 
 </RelativeLayout>
