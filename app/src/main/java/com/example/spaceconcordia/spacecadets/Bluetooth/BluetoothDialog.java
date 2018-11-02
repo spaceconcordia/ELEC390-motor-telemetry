@@ -34,7 +34,6 @@ public class BluetoothDialog extends DialogFragment{
     private static String SelectedBluetoothAdapter;
     ArrayList<String> Name;
     ArrayList<String> Address;
-    BluetoothDevice BTrocket;
 
     public BluetoothDialog(){
         SelectedBluetoothAdapter = "test";

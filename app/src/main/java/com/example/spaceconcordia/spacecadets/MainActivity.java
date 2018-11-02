@@ -65,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
     //PRESENT DATA
     private BigData PresentData;
     private char CurrentStatus;
+
+    //Bluetooth Packet Frequency Counter
+    private int PacketFrequency = 0;
+    private long PastTime = 0;
+    private long currentTime = 0;
+    private int packetCounter = 0;
+    private short sampletime = 1000; //Count packet for 5 seconds
+
     public MainActivity() {
     }
 
@@ -344,29 +352,47 @@ public class MainActivity extends AppCompatActivity {
          */
         CurrentStatus = PresentData.parse(packet); // this function parse the packet
 
+        String StatusText = "";
         switch (CurrentStatus){
             case 'B':
-                BTstatusText.setText("Bad Packet");
+                StatusText = "Bad Packet";
                 break;
             case 'I':
-                BTstatusText.setText("Idle");
+                StatusText = "Idle";
                 break;
             case 'F':
-                BTstatusText.setText("Fired");
+                StatusText ="Fired";
                 break;
             case 'X':
-                BTstatusText.setText("Emergency Stop");
+                StatusText = "Emergency Stop";
                 break;
             case 'x':
-                BTstatusText.setText("Disconnection Stop");
+                StatusText = "Disconnection Stop";
                 break;
             case 'S':
-                BTstatusText.setText("Simulated");
+                StatusText ="Simulated";
                 break;
             case 'D':
-                BTstatusText.setText("Bad connection");
+                StatusText ="Bad connection";
                 break;
         }
+
+        //Frequency counter: count the number of packet in a sample time then find the number of packet per second.
+        currentTime = System.currentTimeMillis();
+        packetCounter++;
+
+        //If sampletime elapsed
+        if (currentTime > PastTime + sampletime){
+            PacketFrequency = packetCounter/(sampletime/1000);
+            PastTime = currentTime;
+            packetCounter= 0; // Reset count to 0;
+        }
+        //Add the frequency to the Status text
+        if (PacketFrequency != 0){
+            StatusText += " - " +PacketFrequency+"Hz";
+        }
+
+        BTstatusText.setText(StatusText);
 
         // Display the sensors in a listview
         if (CurrentStatus != 'B') { // refresh display if the packet was bad!

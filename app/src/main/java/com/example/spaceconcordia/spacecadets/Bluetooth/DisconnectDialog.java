@@ -1,24 +1,18 @@
 package com.example.spaceconcordia.spacecadets.Bluetooth;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
+
 
 import com.example.spaceconcordia.spacecadets.MainActivity;
 import com.example.spaceconcordia.spacecadets.R;
-
-import java.util.ArrayList;
-import java.util.Set;
+;
 
 public class DisconnectDialog extends DialogFragment{
 
