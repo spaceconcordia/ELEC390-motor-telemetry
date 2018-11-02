@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +28,7 @@ import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.BluetoothDialog;
 import com.example.spaceconcordia.spacecadets.Bluetooth.DisconnectDialog;
 import com.example.spaceconcordia.spacecadets.Bluetooth.OfflineTestThread;
+import com.example.spaceconcordia.spacecadets.Bluetooth.packetanalysis;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 import com.example.spaceconcordia.spacecadets.Data_Types.Pressure_Sensor;
 
@@ -66,12 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private BigData PresentData;
     private char CurrentStatus;
 
-    //Bluetooth Packet Frequency Counter
-    private int PacketFrequency = 0;
-    private long PastTime = 0;
-    private long currentTime = 0;
-    private int packetCounter = 0;
-    private short sampletime = 1000; //Count packet for 5 seconds
+    private packetanalysis PacketAnalysis;
 
     public MainActivity() {
     }
@@ -309,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
             writeHandler = RocketThread.getWriteHandler();
             BTconnected = true;
             invalidateOptionsMenu();
+            PacketAnalysis = new packetanalysis();
             RocketThread.start();
         }
 
@@ -339,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(MainActivity.this, "Offline Thread Started", Toast.LENGTH_SHORT).show();
         invalidateOptionsMenu();
-
+        PacketAnalysis = new packetanalysis();
 
     }
 
@@ -356,41 +354,58 @@ public class MainActivity extends AppCompatActivity {
         switch (CurrentStatus){
             case 'B':
                 StatusText = "Bad Packet";
+                BTstatusText.setBackgroundColor(Color.RED);
                 break;
             case 'I':
                 StatusText = "Idle";
+                BTstatusText.setBackgroundColor(Color.GREEN);
                 break;
             case 'F':
                 StatusText ="Fired";
+                BTstatusText.setBackgroundColor(Color.YELLOW);
+
                 break;
             case 'X':
-                StatusText = "Emergency Stop";
+                StatusText = "E. Stop"; // Emergency Stop
+                BTstatusText.setBackgroundColor(Color.RED);
+
                 break;
             case 'x':
-                StatusText = "Disconnection Stop";
+                StatusText = "D. Stop"; // Disconnect Stop
+                BTstatusText.setBackgroundColor(Color.RED);
                 break;
             case 'S':
                 StatusText ="Simulated";
+                BTstatusText.setBackgroundColor(Color.LTGRAY);
+                break;
+            case 'C':
+                StatusText ="Completed";
+                BTstatusText.setBackgroundColor(Color.BLUE);
                 break;
             case 'D':
-                StatusText ="Bad connection";
+                StatusText ="Bad Connection";
+                BTstatusText.setBackgroundColor(Color.RED);
                 break;
         }
 
-        //Frequency counter: count the number of packet in a sample time then find the number of packet per second.
-        currentTime = System.currentTimeMillis();
-        packetCounter++;
+        // Calculate Frequency
+        int freq = PacketAnalysis.FrequencyCalc();
+        // Calculate Health
+        int health = PacketAnalysis.PacketHealth(CurrentStatus);
+        // get total bad packet
+        int BadPacket = PacketAnalysis.getBadPacketTotal();
 
-        //If sampletime elapsed
-        if (currentTime > PastTime + sampletime){
-            PacketFrequency = packetCounter/(sampletime/1000);
-            PastTime = currentTime;
-            packetCounter= 0; // Reset count to 0;
-        }
         //Add the frequency to the Status text
-        if (PacketFrequency != 0){
-            StatusText += " - " +PacketFrequency+"Hz";
+        if (freq != 0){
+            StatusText += "-" +freq+"Hz";
         }
+        //Add the Health to the Status text
+        if (health != 0){
+            StatusText += "-QL:" +health+"%";
+        }
+        StatusText += "-Bad:" +BadPacket;
+
+
 
         BTstatusText.setText(StatusText);
 
