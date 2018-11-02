@@ -4,11 +4,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -349,65 +347,7 @@ public class MainActivity extends AppCompatActivity {
          *
          */
         CurrentStatus = PresentData.parse(packet); // this function parse the packet
-
-        String StatusText = "";
-        switch (CurrentStatus){
-            case 'B':
-                StatusText = "Bad Packet";
-                BTstatusText.setBackgroundColor(Color.RED);
-                break;
-            case 'I':
-                StatusText = "Idle";
-                BTstatusText.setBackgroundColor(Color.GREEN);
-                break;
-            case 'F':
-                StatusText ="Fired";
-                BTstatusText.setBackgroundColor(Color.YELLOW);
-
-                break;
-            case 'X':
-                StatusText = "E. Stop"; // Emergency Stop
-                BTstatusText.setBackgroundColor(Color.RED);
-
-                break;
-            case 'x':
-                StatusText = "D. Stop"; // Disconnect Stop
-                BTstatusText.setBackgroundColor(Color.RED);
-                break;
-            case 'S':
-                StatusText ="Simulated";
-                BTstatusText.setBackgroundColor(Color.LTGRAY);
-                break;
-            case 'C':
-                StatusText ="Completed";
-                BTstatusText.setBackgroundColor(Color.BLUE);
-                break;
-            case 'D':
-                StatusText ="Bad Connection";
-                BTstatusText.setBackgroundColor(Color.RED);
-                break;
-        }
-
-        // Calculate Frequency
-        int freq = PacketAnalysis.FrequencyCalc();
-        // Calculate Health
-        int health = PacketAnalysis.PacketHealth(CurrentStatus);
-        // get total bad packet
-        int BadPacket = PacketAnalysis.getBadPacketTotal();
-
-        //Add the frequency to the Status text
-        if (freq != 0){
-            StatusText += "-" +freq+"Hz";
-        }
-        //Add the Health to the Status text
-        if (health != 0){
-            StatusText += "-QL:" +health+"%";
-        }
-        StatusText += "-Bad:" +BadPacket;
-
-
-
-        BTstatusText.setText(StatusText);
+        PacketAnalysis.GenerateStatusBarText(CurrentStatus,BTstatusText); // This function update the status bar
 
         // Display the sensors in a listview
         if (CurrentStatus != 'B') { // refresh display if the packet was bad!
