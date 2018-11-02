@@ -4,8 +4,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,12 +21,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import java.util.ArrayList;
 import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.BluetoothDialog;
+import com.example.spaceconcordia.spacecadets.Bluetooth.DisconnectDialog;
 import com.example.spaceconcordia.spacecadets.Bluetooth.OfflineTestThread;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 import com.example.spaceconcordia.spacecadets.Data_Types.Pressure_Sensor;
@@ -34,17 +35,24 @@ import java.io.IOException;
 /// Activity allows user to access launch and emergency stop buttons directly, and access to screenselectdialog
 public class MainActivity extends AppCompatActivity {
 
-
+    //Items
     private Button emergencyStopButton;
     private MenuItem launchButton;
     private MenuItem BluetoothConnectButton;
     private ListView sensorListView;
     private TextView BTstatusText;
+    private Menu menu;
+
+    //Icons
+    private Drawable BluetoothConnect;
+    private Drawable BluetoothDisc;
 
     //Bluetooth
     private BluetoothAdapter LocalBluetoothAdapter;
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
+    private DisconnectDialog DiscDialog;
+
     private Handler writeHandler;
 
     //Bluetooth Thread
@@ -57,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     //PRESENT DATA
     private BigData PresentData;
     private char CurrentStatus;
-
     public MainActivity() {
     }
 
@@ -109,16 +116,17 @@ public class MainActivity extends AppCompatActivity {
         public boolean onCreateOptionsMenu (Menu menu){
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu, menu);
+
+            this.menu = menu;
+
             launchButton = menu.findItem(R.id.screenSelectActionButton);
+            BluetoothConnectButton = menu.findItem(R.id.BluetoothActionButton);
 
             launchButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if(BTconnected) {
-
-
                         // Action of launch button
-
                         Message msg = Message.obtain();
                         msg.obj = "S";
                         writeHandler.sendMessage(msg);
@@ -129,11 +137,25 @@ public class MainActivity extends AppCompatActivity {
             });
 
             //On click listener of actionbar bluetooth connect button
-            BluetoothConnectButton = menu.findItem(R.id.BluetoothActionButton);
+
             BluetoothConnectButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    BluetoothSelect();
+
+                    if(!BTconnected) {
+
+                        //If not Connected, Start BT connection
+                        BluetoothSelect();
+
+                    } else if(OfflineThreadActivated){
+
+                        //If simulation thread active, simply kill it;
+                        KillThreads();
+                    } else if(BTconnected){
+                        //If Bluetooth is connected, ask for confirmation;
+                        DiscDialog = new DisconnectDialog();
+                        DiscDialog.show(getSupportFragmentManager(),"Disconnect Dialog");
+                    }
                     return false;
                 }
             });
@@ -146,10 +168,30 @@ public class MainActivity extends AppCompatActivity {
             this.emergencyStopButton = findViewById(R.id.emergencyStopButton);
             this.sensorListView = findViewById(R.id.sensorListView);
             this.BTstatusText = findViewById(R.id.BTStatusTextview);
+            this.BluetoothConnect = getResources().getDrawable(R.drawable.oc_bluetooth);
+            this.BluetoothDisc = getResources().getDrawable(R.drawable.oc_disconnectbt);
+
         }
 
+    //This Update the function menu icons when invalidateOptionsMenu() is called
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+            BluetoothConnectButton = menu.findItem(R.id.BluetoothActionButton);
+            if (BTconnected || OfflineThreadActivated) {
+                BluetoothConnectButton.setIcon(BluetoothDisc);
+            } else {
+                BluetoothConnectButton.setIcon(BluetoothConnect);
+            }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
         /***
+         *
+         *
          ---------  ONLY BLUETOOTH CODE BELOW THIS ----------
+         *
+         *
         ***/
 
         public void setBTrocket(BluetoothDevice device){
@@ -159,17 +201,25 @@ public class MainActivity extends AppCompatActivity {
             BTthread.run();
         }
 
-        protected void BluetoothSelect(){
+        //This kills both Bluetooth and offline simulation thread;
+    public void KillThreads(){
+        if(BTconnected) {
+            RocketThread.KillThread();
+            BTconnected = false;
+        }
+        if(OfflineThreadActivated) {
+            OfflineThread.KillThread();
+            OfflineThreadActivated = false;
+        }
+        BTstatusText.setText("Disconnected");
+        invalidateOptionsMenu();
+    }
+
+    protected void BluetoothSelect(){
 
             //Stop all existing threads
-            if(BTconnected) {
-                RocketThread.KillThread();
-                BTconnected = false;
-            }
-            if(OfflineThreadActivated) {
-                OfflineThread.KillThread();
-                OfflineThreadActivated = false;
-            }
+
+        KillThreads();
 
             LocalBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -235,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
             // Do work to manage the connection (in a separate thread)
             manageConnectedSocket(mmSocket);*/
             Toast.makeText(MainActivity.this, "Connection Successful", Toast.LENGTH_SHORT).show();
+
             RocketThread = new BTthread(mmSocket, new Handler() {
 
                 @Override
@@ -249,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
             });
             writeHandler = RocketThread.getWriteHandler();
             BTconnected = true;
+            invalidateOptionsMenu();
             RocketThread.start();
         }
 
@@ -276,7 +328,10 @@ public class MainActivity extends AppCompatActivity {
         });
         OfflineThreadActivated = true;
         OfflineThread.start();
+
         Toast.makeText(MainActivity.this, "Offline Thread Started", Toast.LENGTH_SHORT).show();
+        invalidateOptionsMenu();
+
 
     }
 
