@@ -1,6 +1,8 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,7 +22,7 @@ public class BigData {
     private static int FlowSen = 2;
     private static int PresSen = 13;
     private int NbSensors = TempSen + FlowSen + PresSen;
-    private DatabaseHelper databaseHelper;
+    private DatabaseHelper databaseHelper ; //  todo needs to be instantiated properly
 
     private Temperature Temp_Sensor_List[];
     private Flow_Sensor Flow_Sensor_List[];
@@ -28,6 +30,8 @@ public class BigData {
     private String All_Sensor_List[];
 
     private char EngineStatus;
+
+    private static final String TAG = "BigData";
 
     Context context;
 
@@ -131,6 +135,9 @@ public class BigData {
 
         return 'B';
     }
+
+
+
 
     public void writeExternalStorage(){
         //use a button that calls this function

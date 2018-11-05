@@ -22,12 +22,19 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "sensorManager";
+    private Context context = null;
+
+    //Sensors Table
     private static final String TABLE_SENSORS = "sensors";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_TYPE = "type";
+
+    //Readings Table
+    private static final String TABLE_READINGS = "readings";
+    private static final String KEY_IDs = "id"; //Not sure yet if we need this columnn
+    private static final String KEY_SENSOR_ID = "sensor_id";
     private static final String KEY_VALUE = "value";
-    private Context context = null;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,9 +51,16 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
                 + KEY_TYPE + "TEXT NOT NULL"
                 + KEY_VALUE + "TEXT NOT FULL"
                 + ")";
+        String CREATE_READINGS_TABLE = "CREATE TABLE" + TABLE_READINGS + "("
+                + KEY_IDs + "INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_SENSOR_ID + "INTEGER NOT NULL,"
+                + KEY_VALUE + "INTEGER NOT NULL"
+                + ")";
 
         Log.d(TAG, "Table create SQL :" + CREATE_SENSOR_TABLE);
+        Log.d(TAG, "Table create SQL :" + CREATE_READINGS_TABLE);
         db.execSQL(CREATE_SENSOR_TABLE);
+        db.execSQL(CREATE_READINGS_TABLE);
 
         Log.d(TAG, "DB created");
 
@@ -56,6 +70,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SENSORS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_READINGS);
 
         onCreate(db);
 
@@ -66,9 +81,9 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        if(temperature.getName() == null) {
-            values.put(KEY_NAME, index);  }
-        else{
+        if (temperature.getName() == null) {
+            values.put(KEY_NAME, index);
+        } else {
             values.put(KEY_NAME, temperature.getName());
         }
         values.put(KEY_TYPE, type);
@@ -84,10 +99,9 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        if(pressure.getName() == null){
+        if (pressure.getName() == null) {
             values.put(KEY_NAME, index);
-        }
-        else{
+        } else {
             values.put(KEY_NAME, pressure.getName());
         }
         values.put(KEY_TYPE, type);
@@ -103,10 +117,9 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        if(flow.getName() == null){
+        if (flow.getName() == null) {
             values.put(KEY_NAME, index);
-        }
-        else{
+        } else {
             values.put(KEY_NAME, flow.getName());
         }
         values.put(KEY_TYPE, type);
@@ -193,7 +206,6 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
     }
 
 
-
     // method that returns list of flow sensors
 
     public List<Flow_Sensor> getAllFlowSensors() {
@@ -201,7 +213,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         Cursor cursor = null;
         try {
 
-            cursor = sqLiteDatabase.query(TABLE_SENSORS,null,KEY_TYPE + " = ?", new String[]{"Flow"}, null,null,null,null);
+            cursor = sqLiteDatabase.query(TABLE_SENSORS, null, KEY_TYPE + " = ?", new String[]{"Flow"}, null, null, null, null);
 
 
             if (cursor != null)
@@ -231,7 +243,57 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     }
 
+
+    // Method that retrieves ID of a sensor from Sensor Table
+    public int getSensorId(String name) {
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        int id = -1;
+        try {
+
+            cursor = sqLiteDatabase.query(TABLE_SENSORS, null,
+                    KEY_NAME + " = ? ", new String[]{name},
+                    null, null, null);
+
+
+            if (cursor.moveToFirst()) {
+                id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: " + e.getMessage());
+            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            sqLiteDatabase.close();
+        }
+
+        return id;
+    }
+
+
+    // Method that input sensor readings in the readings table
+    public void addReading(int sensor_id, short value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_SENSOR_ID,sensor_id);
+        values.put(KEY_VALUE,value);
+
+
+        db.insert(TABLE_READINGS, null, values);
+        db.close();
+    }
 }
+
+
+
+
+
+
+
 
 
 
