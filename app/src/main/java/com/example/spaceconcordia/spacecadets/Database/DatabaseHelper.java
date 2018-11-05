@@ -286,6 +286,41 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         db.insert(TABLE_READINGS, null, values);
         db.close();
     }
+
+    // Method that returns a list of readingds from one sensor
+    public List<Integer> getReadings(int sensor_Id){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String sensor_id= Integer.toString(sensor_Id);
+        Cursor cursor = null;
+        try {
+
+            cursor = sqLiteDatabase.query(TABLE_READINGS, null, KEY_SENSOR_ID+ " = ?", new String[]{sensor_id}, null, null, null, null);
+
+
+            if (cursor != null)
+                if (cursor.moveToFirst()) {
+                    List<Integer> readingsList = new ArrayList<>();
+                    do {
+                        int value = cursor.getInt(cursor.getColumnIndex(KEY_VALUE));
+
+                        readingsList.add(value);
+                    } while (cursor.moveToNext());
+
+                    return readingsList;
+                }
+
+        } catch (Exception e) {
+
+            Log.d(TAG, "Exception" + e.getMessage());
+            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+            sqLiteDatabase.close();
+        }
+        return
+                Collections.emptyList();
+    }
 }
 
 
