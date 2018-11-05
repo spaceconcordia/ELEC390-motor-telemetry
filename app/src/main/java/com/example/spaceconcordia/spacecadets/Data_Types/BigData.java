@@ -1,5 +1,11 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
+import android.view.View;
+
+import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
+
+import org.omg.CORBA.Environment;
+
 import java.util.regex.Pattern;
 
 public class BigData {
@@ -7,6 +13,7 @@ public class BigData {
     private static int FlowSen = 2;
     private static int PresSen = 13;
     private int NbSensors = TempSen + FlowSen + PresSen;
+    private DatabaseHelper databaseHelper;
 
     private Temperature Temp_Sensor_List[];
     private Flow_Sensor Flow_Sensor_List[];
@@ -24,15 +31,25 @@ public class BigData {
         EngineStatus = 'D';
 
         for(int i = 0; i<TempSen; i++){
-
             // These are just temporary names for now
             Temp_Sensor_List[i] = new Temperature("Temperature Sensor " + (i+1));
-        }        for(int i = 0; i<FlowSen;i++){
+        }
+        for(int i = 0; i<FlowSen;i++){
             Flow_Sensor_List[i] = new Flow_Sensor("Flow Sensor " + (i+1));
-        }        for(int i = 0; i<PresSen; i++) {
+        }
+        for(int i = 0; i<PresSen; i++) {
             Pressure_Sensor_List[i] = new Pressure_Sensor("Pressure Sensor " + (i+1));
         }
 
+        for (int i=0; i<TempSen; i++){
+            databaseHelper.addTemperatureSensor(Temp_Sensor_List[i], i);
+        }
+        for(int i=0; i<FlowSen; i++){
+            databaseHelper.addFlowSensor(Flow_Sensor_List[i], i);
+        }
+        for(int i=0; i<PresSen; i++){
+            databaseHelper.addPressureSensor(Pressure_Sensor_List[i], i);
+        }
         // if all the sensors use the same max and min values, then we need to change them once
         // in their own class. But if there are sensors that have their own min and max requirements
         // we can easily initiate them here, all we need to do is add another constructor.
@@ -81,6 +98,11 @@ public class BigData {
                     All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current Value: " + Pressure_Sensor_List[i].GetValue();
                 }
 
+                for(int i=0; i<TempSen; i++)
+                {
+
+                }
+
                 /**
                  *
                  * Temperature[0] = Short.parseShort(Sensors[0],16); // This convert the HEX string to short
@@ -93,11 +115,15 @@ public class BigData {
                  * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
                  */
 
+
+
              return EngineStatus;
             }
 
         return 'B';
     }
+
+
 
 }
 

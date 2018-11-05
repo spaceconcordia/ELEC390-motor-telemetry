@@ -26,6 +26,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_TYPE = "type";
+    private static final String KEY_VALUE = "value";
     private Context context = null;
 
     public DatabaseHelper(Context context) {
@@ -41,6 +42,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
                 + KEY_ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_NAME + "TEXT NOT NULL,"
                 + KEY_TYPE + "TEXT NOT NULL"
+                + KEY_VALUE + "TEXT NOT FULL"
                 + ")";
 
         Log.d(TAG, "Table create SQL :" + CREATE_SENSOR_TABLE);
@@ -59,39 +61,56 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     }
 
-    void addTemperatureSensor(Temperature temperature) {
+    public void addTemperatureSensor(Temperature temperature, int index) {
         String type = "Temperature";
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, temperature.getName());
+        if(temperature.getName() == null) {
+            values.put(KEY_NAME, index);  }
+        else{
+            values.put(KEY_NAME, temperature.getName());
+        }
         values.put(KEY_TYPE, type);
+        values.put(KEY_VALUE, temperature.GetValue());
 
         db.insert(TABLE_SENSORS, null, values);
         db.close();
 
     }
 
-    void addPressureSensor(Pressure_Sensor pressure) {
+    public void addPressureSensor(Pressure_Sensor pressure, int index) {
         String type = "Pressure";
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, pressure.getName());
+        if(pressure.getName() == null){
+            values.put(KEY_NAME, index);
+        }
+        else{
+            values.put(KEY_NAME, pressure.getName());
+        }
         values.put(KEY_TYPE, type);
+        values.put(KEY_VALUE, pressure.GetValue());
 
         db.insert(TABLE_SENSORS, null, values);
         db.close();
 
     }
 
-    void addFlowSensor(Flow_Sensor flow) {
+    public void addFlowSensor(Flow_Sensor flow, int index) {
         String type = "Flow";
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, flow.getName());
+        if(flow.getName() == null){
+            values.put(KEY_NAME, index);
+        }
+        else{
+            values.put(KEY_NAME, flow.getName());
+        }
         values.put(KEY_TYPE, type);
+        values.put(KEY_VALUE, flow.GetValue());
 
         db.insert(TABLE_SENSORS, null, values);
         db.close();
