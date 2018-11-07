@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Button emergencyStopButton;
     private MenuItem launchButton;
     private MenuItem BluetoothConnectButton;
+    private MenuItem SaveButton;
     private ListView sensorListView;
     private TextView BTstatusText;
     private Menu menu;
@@ -122,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
 
             this.menu = menu;
 
-            launchButton = menu.findItem(R.id.screenSelectActionButton);
+            launchButton = menu.findItem(R.id.LaunchButton);
             BluetoothConnectButton = menu.findItem(R.id.BluetoothActionButton);
+            SaveButton = menu.findItem(R.id.Save_Button);
 
             launchButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
@@ -162,7 +164,14 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             });
+            SaveButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    PresentData.writeExternalStorage();
+                    return false;
+                }
 
+            });
 
             return true;
         }
@@ -353,6 +362,9 @@ public class MainActivity extends AppCompatActivity {
         if (CurrentStatus != 'B') { // refresh display if the packet was bad!
             ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
             sensorListView.setAdapter(adapter);
+        }
+        if (CurrentStatus =='T'){ //Timed out! Disconnect Bluetooth
+            KillThreads();
         }
     }
 

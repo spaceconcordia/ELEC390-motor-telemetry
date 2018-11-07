@@ -30,6 +30,7 @@ public class BTthread extends Thread {
     private int PingTime = 250; //Ping time in ms
     private long CurrentTime = 0;
     private long LastPingTime = 0;
+    private long LastPacketReceived = 0;
 
     /**
      Background Thread that handle the bluetooth reception and transmission
@@ -59,6 +60,7 @@ public class BTthread extends Thread {
                 write((String) message.obj);
             }
         };
+        LastPacketReceived = System.currentTimeMillis();
 
     }
 
@@ -107,17 +109,22 @@ public class BTthread extends Thread {
 
             // Read data and add it to the buffer
             String s = read();
-            if (s.length() > 0)
+            if (s.length() > 0) {
                 rx_buffer += s;
-
+                LastPacketReceived = System.currentTimeMillis();
+            }
             // Look for complete messages
             parseMessages();
+
+            //Timeout
+            if (LastPacketReceived+2000 < System.currentTimeMillis()){
+                sendToReadHandler("T");
+            }
         }
 
         // If thread is interrupted, close connections
-        cancel();
-        sendToReadHandler("DISCONNECTED");
-
+             cancel();
+            sendToReadHandler("Q");
     }
 
     /* Call this from the main activity to send data to the remote device */
