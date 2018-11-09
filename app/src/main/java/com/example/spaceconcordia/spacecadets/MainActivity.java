@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
@@ -41,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem BluetoothConnectButton;
     private MenuItem SaveButton;
     private ListView sensorListView;
+
+    private ArrayAdapter adapter;
+
     private TextView BTstatusText;
     private Menu menu;
 
@@ -93,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         sensorListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -196,6 +205,13 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothConnectButton.setIcon(BluetoothConnect);
             }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    // before updating the sensor data in the listView, clear the adapter, add the new data, and send a update notification
+    public void refill(String[] sensorData, ArrayAdapter adapter) {
+        adapter.clear();
+        adapter.addAll(sensorData);
+        adapter.notifyDataSetChanged();
     }
 
         /***
@@ -360,8 +376,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Display the sensors in a listview
         if (CurrentStatus != 'B') { // refresh display if the packet was bad!
-            ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
-            sensorListView.setAdapter(adapter);
+
+            String[] stringList = PresentData.getAllSensorsByString();
+            ArrayList<String> lst = new ArrayList<>(Arrays.asList(stringList));
+
+            // only set the adapter if the adapter is null, otherwise update the sensor data
+            if(sensorListView.getAdapter() == null) {
+                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lst);
+                sensorListView.setAdapter(adapter);
+            }
+            else {
+                refill(PresentData.getAllSensorsByString(), adapter);
+            }
         }
         if (CurrentStatus =='T'){ //Timed out! Disconnect Bluetooth
             KillThreads();

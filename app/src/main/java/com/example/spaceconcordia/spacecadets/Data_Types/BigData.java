@@ -85,16 +85,6 @@ public class BigData {
     /// getter of the sensor list objects
     public String[] getAllSensorsByString(){return All_Sensor_List;}
 
-    public Sensor getSensorByName(String name){
-        for(Sensor s : Sensor_List){
-            if(s.getName().equals(name)){
-                return s;
-            }
-        }
-        return null;
-    }
-
-
     /**
      * Sample packet : 445‑A90‑21B2‑E15‑2281‑1147‑140E‑1550‑2023‑70B‑F45‑D71‑139A‑FA4‑14C7‑1F40‑E04‑15B7‑A84‑13E4‑15C7‑1FD0‑1A5F‑1FD2‑171‑2164‑2113‑5E1‑2233
      * The packet are in hexadecimals and values are separated by '-'
@@ -111,8 +101,7 @@ public class BigData {
                     EngineStatus = PacketParts[0].charAt(0);
                 }
 
-
-                All_Sensor_List = new String[PacketParts.length];
+                All_Sensor_List = new String[PacketParts.length-1];
 
                 for (int i = 0; i < TempSen; i++) {
                     Temp_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
