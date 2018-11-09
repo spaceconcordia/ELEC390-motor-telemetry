@@ -68,7 +68,7 @@ public class packetanalysis {
         switch (Status){
             case 'B':
                 StatusBarText = "Bad Packet";
-                BTstatusText.setBackgroundColor(Color.RED);
+                BTstatusText.setBackgroundColor(Color.rgb(255,140,0)); // Orange
                 break;
             case 'I':
                 StatusBarText = "Idle";
@@ -98,26 +98,34 @@ public class packetanalysis {
                 break;
             case 'D':
                 StatusBarText ="Bad Connection";
-                BTstatusText.setBackgroundColor(Color.RED);
+                BTstatusText.setBackgroundColor(Color.rgb(255,140,0)); // Orange
+                break;
+            case 'T':
+                StatusBarText ="Time out!";
+                BTstatusText.setBackgroundColor(Color.rgb(255,140,0)); // Orange
+                break;
+            case 'Q':
+                StatusBarText ="Disconnected";
+                BTstatusText.setBackgroundColor(Color.rgb(255,140,0)); // Orange
                 break;
         }
+        if (Status != 'T' && Status != 'Q') {
+            // Calculate Frequency
+            int freq = FrequencyCalc();
+            // Calculate Health
+            int health = PacketHealth(Status);
+            // get total bad packet
+            //Add the frequency to the Status text
+            if (freq != 0) {
+                StatusBarText += "-" + freq + "Hz";
+            }
+            //Add the Health to the Status text
+            if (health != 0) {
+                StatusBarText += "-QL:" + health + "%";
+            }
+            StatusBarText += "-Bad:" + BadPacketTotal;
 
-        // Calculate Frequency
-        int freq = FrequencyCalc();
-        // Calculate Health
-        int health = PacketHealth(Status);
-        // get total bad packet
-        //Add the frequency to the Status text
-        if (freq != 0){
-            StatusBarText += "-" +freq+"Hz";
+            BTstatusText.setText(StatusBarText);
         }
-        //Add the Health to the Status text
-        if (health != 0){
-            StatusBarText += "-QL:" +health+"%";
-        }
-        StatusBarText += "-Bad:" +BadPacketTotal;
-
-        BTstatusText.setText(StatusBarText);
-
     }
 }

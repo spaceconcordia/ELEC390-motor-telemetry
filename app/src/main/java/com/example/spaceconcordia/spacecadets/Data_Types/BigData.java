@@ -9,8 +9,6 @@ import android.widget.Toast;
 import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
 import com.example.spaceconcordia.spacecadets.MainActivity;
 
-//import org.omg.CORBA.Environment;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,19 +46,29 @@ public class BigData {
         for(int i = 0; i<TempSen; i++){
             // These are just temporary names for now
             Temp_Sensor_List[i] = new Temperature("Temperature Sensor " + (i+1));
-            //databaseHelper.addTemperatureSensor(Temp_Sensor_List[i], i);
             Sensor_List[i] = Temp_Sensor_List[i];
         }
         for(int i = 0; i<FlowSen;i++){
             Flow_Sensor_List[i] = new Flow_Sensor("Flow Sensor " + (i+1));
-            //databaseHelper.addFlowSensor(Flow_Sensor_List[i], i);
             Sensor_List[i+TempSen] = Flow_Sensor_List[i];
         }
         for(int i = 0; i<PresSen; i++) {
             Pressure_Sensor_List[i] = new Pressure_Sensor("Pressure Sensor " + (i+1));
-            //databaseHelper.addPressureSensor(Pressure_Sensor_List[i], i);
             Sensor_List[i+TempSen+FlowSen] = Pressure_Sensor_List[i];
         }
+
+
+        /**
+         * // -- This is not implemented -> program crash on startup
+        for (int i=0; i<TempSen; i++){
+            databaseHelper.addTemperatureSensor(Temp_Sensor_List[i], i);
+        }
+        for(int i=0; i<FlowSen; i++){
+            databaseHelper.addFlowSensor(Flow_Sensor_List[i], i);
+        }
+        for(int i=0; i<PresSen; i++){
+             databaseHelper.addPressureSensor(Pressure_Sensor_List[i], i);
+        }*/
 
         // if all the sensors use the same max and min values, then we need to change them once
         // in their own class. But if there are sensors that have their own min and max requirements
@@ -134,9 +142,11 @@ public class BigData {
 
 
              return EngineStatus;
-            }
+            } else if (PacketParts.length == 1) {
+             return PacketParts[0].charAt(0); // Return Current code
+         }
 
-        return 'B';
+        return 'B'; // Something Went wrong! Bad packet
     }
 
 
