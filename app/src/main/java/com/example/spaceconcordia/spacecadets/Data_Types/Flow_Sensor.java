@@ -1,6 +1,6 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
-public class Flow_Sensor {
+public class Flow_Sensor extends Sensor {
 
     private short Value;
     private int Average;

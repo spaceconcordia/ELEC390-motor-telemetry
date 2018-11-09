@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
 import com.example.spaceconcordia.spacecadets.MainActivity;
 
-import org.omg.CORBA.Environment;
+//import org.omg.CORBA.Environment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +27,7 @@ public class BigData {
     private Temperature Temp_Sensor_List[];
     private Flow_Sensor Flow_Sensor_List[];
     private Pressure_Sensor Pressure_Sensor_List[];
+    private Sensor Sensor_List[];
     private String All_Sensor_List[];
 
     private char EngineStatus;
@@ -40,29 +41,27 @@ public class BigData {
         Temp_Sensor_List = new Temperature[TempSen];
         Flow_Sensor_List = new Flow_Sensor[FlowSen];
         Pressure_Sensor_List = new Pressure_Sensor[PresSen];
+        Sensor_List = new Sensor[TempSen+FlowSen+PresSen];
 
         EngineStatus = 'D';
 
         for(int i = 0; i<TempSen; i++){
             // These are just temporary names for now
             Temp_Sensor_List[i] = new Temperature("Temperature Sensor " + (i+1));
+            //databaseHelper.addTemperatureSensor(Temp_Sensor_List[i], i);
+            Sensor_List[i] = Temp_Sensor_List[i];
         }
         for(int i = 0; i<FlowSen;i++){
             Flow_Sensor_List[i] = new Flow_Sensor("Flow Sensor " + (i+1));
+            //databaseHelper.addFlowSensor(Flow_Sensor_List[i], i);
+            Sensor_List[i+TempSen] = Flow_Sensor_List[i];
         }
         for(int i = 0; i<PresSen; i++) {
             Pressure_Sensor_List[i] = new Pressure_Sensor("Pressure Sensor " + (i+1));
+            //databaseHelper.addPressureSensor(Pressure_Sensor_List[i], i);
+            Sensor_List[i+TempSen+FlowSen] = Pressure_Sensor_List[i];
         }
 
-        for (int i=0; i<TempSen; i++){
-            databaseHelper.addTemperatureSensor(Temp_Sensor_List[i], i);
-        }
-        for(int i=0; i<FlowSen; i++){
-            databaseHelper.addFlowSensor(Flow_Sensor_List[i], i);
-        }
-        for(int i=0; i<PresSen; i++){
-            databaseHelper.addPressureSensor(Pressure_Sensor_List[i], i);
-        }
         // if all the sensors use the same max and min values, then we need to change them once
         // in their own class. But if there are sensors that have their own min and max requirements
         // we can easily initiate them here, all we need to do is add another constructor.
@@ -77,6 +76,15 @@ public class BigData {
 
     /// getter of the sensor list objects
     public String[] getAllSensorsByString(){return All_Sensor_List;}
+
+    public Sensor getSensorByName(String name){
+        for(Sensor s : Sensor_List){
+            if(s.getName().equals(name)){
+                return s;
+            }
+        }
+        return null;
+    }
 
 
     /**
@@ -109,11 +117,6 @@ public class BigData {
                 for (int i = 0; i < PresSen; i++) {
                     Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
                     All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current Value: " + Pressure_Sensor_List[i].GetValue();
-                }
-
-                for(int i=0; i<TempSen; i++)
-                {
-
                 }
 
                 /**

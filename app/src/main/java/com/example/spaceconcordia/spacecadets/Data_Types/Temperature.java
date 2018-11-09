@@ -1,6 +1,9 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
-public class Temperature {
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+public class Temperature extends Sensor {
 
     private short Value;
     private int Average; //if we ever want to display the average, at least we have it here

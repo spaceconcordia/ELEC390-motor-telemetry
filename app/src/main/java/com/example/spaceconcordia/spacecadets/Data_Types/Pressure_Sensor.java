@@ -1,6 +1,6 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
-public class Pressure_Sensor {
+public class Pressure_Sensor extends Sensor {
 
 
     private short Value;
