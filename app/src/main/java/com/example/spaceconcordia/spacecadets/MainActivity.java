@@ -91,10 +91,9 @@ public class MainActivity extends AppCompatActivity {
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
                 if(BTconnected) {
-
                     //Action of Emergency Stop Button
-
                     Message msg = Message.obtain();
                     msg.obj = "X";
                     writeHandler.sendMessage(msg);
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("PacketAnalysis", PacketAnalysis);
                 intent.putExtra("BTconnected", BTconnected);
 
-                startActivity(intent);
+                startActivityForResult(intent,0);
             }
         });
 
@@ -125,6 +124,30 @@ public class MainActivity extends AppCompatActivity {
         PresentData = new BigData(); // Initialize PresentData
 
         BluetoothSelect(); // Initial bluetooth connection
+
+
+
+    }
+
+    // This method is called when the Sensor activity is finished, if DisconnectStatus = True then disconnect
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // check that it is the SecondActivity with an OK result
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
+                if (requestCode == 0) {
+                    // get String data from Intent
+                    Boolean DisconnectStatus = data.getBooleanExtra("DisconnectStatus", false);
+                    if (DisconnectStatus && BTconnected) {
+                        //Action of Emergency Stop Button
+                        Message msg = Message.obtain();
+                        msg.obj = "X";
+                        writeHandler.sendMessage(msg);
+                    }
+                }
+            }
 
     }
 

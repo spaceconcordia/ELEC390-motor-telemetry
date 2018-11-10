@@ -89,14 +89,13 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(BTconnected) {
-/** todo Emergency STOP button not working on sensor activity
+
                     //Action of Emergency Stop Button
-                    Message msg = Message.obtain();
-                    msg.obj = "X";
-                    writeHandler.sendMessage(msg);
-                    */
-                }
+                    Intent intent = new Intent();
+                    intent.putExtra("DisconnectStatus", true);
+                    setResult(RESULT_OK, intent);
+                    finish();
+
             }
         });
 
@@ -108,8 +107,8 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         int point = Integer.parseInt(value);
         if (point>MaxValue){
             MaxValue = point;
+            viewport.setMaxY(MaxValue);
         }
-        viewport.setMaxY(MaxValue);
 
         //append a new data point to the graph every time the sensor's value get updated
         series.appendData(new DataPoint(xValue++, point), true, 100);
