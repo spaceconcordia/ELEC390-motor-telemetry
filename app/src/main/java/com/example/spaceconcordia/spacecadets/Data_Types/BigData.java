@@ -1,21 +1,20 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
-import com.example.spaceconcordia.spacecadets.MainActivity;
+import com.example.spaceconcordia.spacecadets.R;
+import com.example.spaceconcordia.spacecadets.SingleSensorDisplayActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
-public class BigData {
+public class BigData implements Serializable {
     private static int TempSen = 14;
     private static int FlowSen = 2;
     private static int PresSen = 13;
@@ -33,6 +32,7 @@ public class BigData {
     private static final String TAG = "BigData";
 
     Context context;
+    private static Context currentContext;
 
     public BigData() {
 
@@ -82,8 +82,28 @@ public class BigData {
         // To HERE
     }
 
+    private Context getContext(){
+        return currentContext;
+    }
+
+    public void setContext(Context context){
+        this.currentContext = context;
+    }
+
     /// getter of the sensor list objects
     public String[] getAllSensorsByString(){return All_Sensor_List;}
+
+    public String getSensorValueByListPosition(int position){
+        if(position < TempSen){
+            return String.valueOf(Temp_Sensor_List[position].GetValue());
+        }
+        else if(position < TempSen + FlowSen){
+            return String.valueOf(Flow_Sensor_List[position-TempSen].GetValue());
+        }
+        else{
+            return String.valueOf(Pressure_Sensor_List[position-(TempSen+FlowSen)].GetValue());
+        }
+    }
 
     /**
      * Sample packet : 445‑A90‑21B2‑E15‑2281‑1147‑140E‑1550‑2023‑70B‑F45‑D71‑139A‑FA4‑14C7‑1F40‑E04‑15B7‑A84‑13E4‑15C7‑1FD0‑1A5F‑1FD2‑171‑2164‑2113‑5E1‑2233
@@ -105,16 +125,25 @@ public class BigData {
 
                 for (int i = 0; i < TempSen; i++) {
                     Temp_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                    All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current Value: " + Temp_Sensor_List[i].GetValue();
+                    All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current value: " + Temp_Sensor_List[i].GetValue();
                 }
                 for (int i = 0; i < FlowSen; i++) {
                     Flow_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + 1], 16));
-                    All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current Value: " + Flow_Sensor_List[i].GetValue();
+                    All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current value: " + Flow_Sensor_List[i].GetValue();
                 }
                 for (int i = 0; i < PresSen; i++) {
                     Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
-                    All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current Value: " + Pressure_Sensor_List[i].GetValue();
+                    All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current value: " + Pressure_Sensor_List[i].GetValue();
                 }
+
+                // send the selected sensor's data to the graphing activity when it is created/resumed
+                if(SingleSensorDisplayActivity.isActivityInFront()){
+                    SingleSensorDisplayActivity currentActivity = (SingleSensorDisplayActivity) getContext();
+
+                    //pass the new data point associated with the selected sensor for the graphing activity
+                    currentActivity.updateDataPoint(getSensorValueByListPosition(currentActivity.getPosition()));
+                }
+
 
                 /**
                  *
@@ -128,8 +157,6 @@ public class BigData {
                  * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
                  */
 
-
-
              return EngineStatus;
             } else if (PacketParts.length == 1) {
              return PacketParts[0].charAt(0); // Return Current code
@@ -137,9 +164,6 @@ public class BigData {
 
         return 'B'; // Something Went wrong! Bad packet
     }
-
-
-
 
     public void writeExternalStorage(){
         //use a button that calls this function

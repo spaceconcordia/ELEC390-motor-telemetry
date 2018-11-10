@@ -6,9 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".SingleSensorDisplayActivity">
 
+    <TextView
+        android:id="@+id/newDataTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp" />
+
     <com.jjoe64.graphview.GraphView
         android:id="@+id/sensorDisplayGraph"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newDataTextView"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

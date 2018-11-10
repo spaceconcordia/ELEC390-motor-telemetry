@@ -102,14 +102,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         sensorListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedSensor = (String) (sensorListView.getItemAtPosition(position));
+
+                String string = (String) (sensorListView.getItemAtPosition(position));
+                String selectedSensor[] = string.split("\\r?\\n");
 
                 Intent intent = new Intent(MainActivity.this, SingleSensorDisplayActivity.class);
-                intent.putExtra("sensorName", selectedSensor);
+                intent.putExtra("sensorName", selectedSensor[0]);
+                intent.putExtra("sensorPosition", position);
+                intent.putExtra("serialized_data", PresentData);
                 startActivity(intent);
             }
         });
@@ -377,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
         // Display the sensors in a listview
         if (CurrentStatus != 'B') { // refresh display if the packet was bad!
 
+            // TODO: i should just save the sensors in an arrayList to begin with
             String[] stringList = PresentData.getAllSensorsByString();
             ArrayList<String> lst = new ArrayList<>(Arrays.asList(stringList));
 

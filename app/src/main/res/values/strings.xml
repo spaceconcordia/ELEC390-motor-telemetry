@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Motor Telemetry</string>
     <string name="cancel_button_content">Cancel</string>
+    <string name="current_sensor_value">Current Value: </string>
     <string name="title_activity_single_sensor_select">Single-Sensor Select</string>
     <string name="Title_Bluetooth_dialog">Select the Rocket Engine bluetooth adapter</string>
     <string name="Button_Bluetooth_dialog_testing">Standalone testing</string>
