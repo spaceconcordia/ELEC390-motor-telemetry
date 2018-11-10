@@ -31,6 +31,8 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private packetanalysis PacketAnalysis;
     private BigData PresentData;
     private boolean BTconnected;
+    private int MaxValue = 100;
+    private Viewport viewport;
 
     // true if current activity is SingleSensorDislayActivity
     public static boolean isActivityInFront(){
@@ -75,10 +77,10 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         graph = findViewById(R.id.sensorDisplayGraph);
         series = new LineGraphSeries<>();
         graph.addSeries(series);
-        Viewport viewport = graph.getViewport();
+        viewport = graph.getViewport();
         viewport.setYAxisBoundsManual(true);
         viewport.setMinY(0);
-        viewport.setMaxY(1000);
+        viewport.setMaxY(MaxValue);
         viewport.setMaxX(100);
         viewport.setScalable(true);
 
@@ -104,6 +106,10 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     public void updateDataPoint(String value){
         dataTextView.setText(String.format("Current Value: %s", value));
         int point = Integer.parseInt(value);
+        if (point>MaxValue){
+            MaxValue = point;
+        }
+        viewport.setMaxY(MaxValue);
 
         //append a new data point to the graph every time the sensor's value get updated
         series.appendData(new DataPoint(xValue++, point), true, 100);
