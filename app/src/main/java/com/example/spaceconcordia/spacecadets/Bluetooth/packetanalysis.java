@@ -3,8 +3,11 @@ package com.example.spaceconcordia.spacecadets.Bluetooth;
 import android.graphics.Color;
 import android.widget.TextView;
 
+import java.io.Serializable;
+
 //This class determine the packet frequency and the transmission health
-public class packetanalysis {
+public class packetanalysis implements Serializable {
+
 
     //Bluetooth Packet Frequency Counter
     private int PacketFrequency;

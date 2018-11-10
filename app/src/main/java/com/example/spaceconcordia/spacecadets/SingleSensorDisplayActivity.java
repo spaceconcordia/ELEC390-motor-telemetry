@@ -1,10 +1,14 @@
 package com.example.spaceconcordia.spacecadets;
 
 import android.content.Intent;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.spaceconcordia.spacecadets.Bluetooth.packetanalysis;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
@@ -22,6 +26,11 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private int position;
     private int xValue = 0;
     private LineGraphSeries<DataPoint> series;
+    private Button emergencyStopButton;
+    private TextView BTstatusText;
+    private packetanalysis PacketAnalysis;
+    private BigData PresentData;
+    private boolean BTconnected;
 
     // true if current activity is SingleSensorDislayActivity
     public static boolean isActivityInFront(){
@@ -56,7 +65,9 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         Intent intent = getIntent();
         setTitle(intent.getExtras().getString("sensorName"));
         position = intent.getExtras().getInt("sensorPosition");
-        BigData PresentData = (BigData) intent.getSerializableExtra("serialized_data");
+        PresentData = (BigData) intent.getSerializableExtra("serialized_data");
+        PacketAnalysis = (packetanalysis) intent.getSerializableExtra("PacketAnalysis");
+        BTconnected = (boolean) intent.getSerializableExtra("BTconnected");
         PresentData.setContext(this);
 
         dataTextView = findViewById(R.id.newDataTextView);
@@ -70,6 +81,24 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         viewport.setMaxY(1000);
         viewport.setMaxX(100);
         viewport.setScalable(true);
+
+        this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
+        this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);
+        emergencyStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(BTconnected) {
+/** todo Emergency STOP button not working on sensor activity
+                    //Action of Emergency Stop Button
+                    Message msg = Message.obtain();
+                    msg.obj = "X";
+                    writeHandler.sendMessage(msg);
+                    */
+                }
+            }
+        });
+
+
     }
 
     public void updateDataPoint(String value){
@@ -78,6 +107,10 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
         //append a new data point to the graph every time the sensor's value get updated
         series.appendData(new DataPoint(xValue++, point), true, 100);
+
+        // update the Connection Status bar at the same time
+        PacketAnalysis.GenerateStatusBarText(PresentData.GetEngineStatus(),BTstatusText); // This function update the status bar
+
     }
 
 }

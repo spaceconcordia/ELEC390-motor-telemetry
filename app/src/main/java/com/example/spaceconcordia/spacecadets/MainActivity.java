@@ -113,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("sensorName", selectedSensor[0]);
                 intent.putExtra("sensorPosition", position);
                 intent.putExtra("serialized_data", PresentData);
+                intent.putExtra("PacketAnalysis", PacketAnalysis);
+                intent.putExtra("BTconnected", BTconnected);
+
                 startActivity(intent);
             }
         });

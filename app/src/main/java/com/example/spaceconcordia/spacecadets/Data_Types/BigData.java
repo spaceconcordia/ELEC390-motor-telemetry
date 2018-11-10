@@ -157,12 +157,12 @@ public class BigData implements Serializable {
                  * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
                  */
 
-             return EngineStatus;
             } else if (PacketParts.length == 1) {
-             return PacketParts[0].charAt(0); // Return Current code
+             EngineStatus = PacketParts[0].charAt(0);
+             } else{
+             EngineStatus = 'B';
          }
-
-        return 'B'; // Something Went wrong! Bad packet
+        return EngineStatus; // Something Went wrong! Bad packet
     }
 
     public void writeExternalStorage(){
@@ -200,6 +200,8 @@ public class BigData implements Serializable {
         }
 
     }
+
+    public char GetEngineStatus(){return EngineStatus;}
 
 }
 
