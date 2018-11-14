@@ -95,9 +95,6 @@ public class BigData implements Serializable {
     public String[] getAllSensorsByString(){return All_Sensor_List;}
 
     public String getSensorValueByListPosition(int position){
-        if(!ActiveSens[position]){
-            return "Not Connected";
-        }
 
         if(position < TempSen){
             return String.valueOf(Temp_Sensor_List[position].GetValue());
@@ -134,25 +131,29 @@ public class BigData implements Serializable {
                         All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current value: " + Temp_Sensor_List[i].GetValue();
                         ActiveSens[i] = true;
                     }else{
-                        ActiveSens[i] = false;
+                        All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Disconnected";
+                        Temp_Sensor_List[i].UpdateValue((short)-1);
                     }
                 }
                 for (int i = 0; i < FlowSen; i++) {
                     if(!PacketParts[i + TempSen + 1].equals("X")) {
                     Flow_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + 1], 16));
                     All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current value: " + Flow_Sensor_List[i].GetValue();
-                        ActiveSens[i + TempSen] = true;
                     }else{
-                        ActiveSens[i + TempSen] = false;
+                        All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "Disconnected";
+                        Flow_Sensor_List[i].UpdateValue((short)-1);
+
+
                     }
                 }
                 for (int i = 0; i < PresSen; i++) {
                     if(!PacketParts[i + TempSen + FlowSen + 1].equals("X")) {
                         Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
                         All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current value: " + Pressure_Sensor_List[i].GetValue();
-                        ActiveSens[i + TempSen + FlowSen] = true;
                     }else{
-                        ActiveSens[i + TempSen + FlowSen] = false;
+                        All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "Disconnected";
+                        Temp_Sensor_List[i].UpdateValue((short)-1);
+
                     }
                 }
 
