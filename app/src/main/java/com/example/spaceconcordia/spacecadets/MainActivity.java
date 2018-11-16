@@ -136,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         // check that it is the SecondActivity with an OK result
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
-                if (requestCode == 0) {
+                if (requestCode == 0) { // back from Sensor Activity
                     // get String data from Intent
                     Boolean DisconnectStatus = data.getBooleanExtra("DisconnectStatus", false);
                     if (DisconnectStatus && BTconnected) {
@@ -145,11 +144,16 @@ public class MainActivity extends AppCompatActivity {
                         Message msg = Message.obtain();
                         msg.obj = "X";
                         writeHandler.sendMessage(msg);
+                        Toast.makeText(MainActivity.this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
+                    }
+                }
+                if (requestCode == 10) { // Bluetooth is enabled
+                    BluetoothSelect();
                     }
                 }
             }
 
-    }
+
 
 
 
@@ -277,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
             //Stop all existing threads
 
         KillThreads();
-
             LocalBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
             if (LocalBluetoothAdapter == null) {
@@ -288,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                 //Check if bluetooth is turned on
                 if (!LocalBluetoothAdapter.isEnabled()) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableBtIntent, 0);
+                    startActivityForResult(enableBtIntent, 10);
                 }
             }
             //Ask the used which bluetooth adapter to connect to.
