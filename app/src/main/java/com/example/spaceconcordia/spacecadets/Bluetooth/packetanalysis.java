@@ -127,8 +127,7 @@ public class packetanalysis implements Serializable {
                 StatusBarText += "-QL:" + health + "%";
             }
             StatusBarText += "-Bad:" + BadPacketTotal;
-
-            BTstatusText.setText(StatusBarText);
-        }
+            }
+        BTstatusText.setText(StatusBarText);
     }
 }

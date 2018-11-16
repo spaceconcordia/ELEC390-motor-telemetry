@@ -272,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
             OfflineThread.KillThread();
             OfflineThreadActivated = false;
         }
-        BTstatusText.setText("Disconnected");
         invalidateOptionsMenu();
     }
 
