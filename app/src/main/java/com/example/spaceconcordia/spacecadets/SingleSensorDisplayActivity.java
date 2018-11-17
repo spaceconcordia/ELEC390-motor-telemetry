@@ -103,18 +103,21 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     }
 
     public void updateDataPoint(String value){
-        dataTextView.setText(String.format("Current Value: %s", value));
         int point = Integer.parseInt(value);
-        if (point>MaxValue){
-            MaxValue = point;
-            viewport.setMaxY(MaxValue);
+        if (value.equals("-1")) {
+            dataTextView.setText(String.format("Disconnected"));
+        }else {
+            dataTextView.setText(String.format("Current Value: %s", value));
+            if (point > MaxValue) {
+                MaxValue = point;
+                viewport.setMaxY(MaxValue);
+            }
         }
+            //append a new data point to the graph every time the sensor's value get updated
+            series.appendData(new DataPoint(xValue++, point), true, 100);
 
-        //append a new data point to the graph every time the sensor's value get updated
-        series.appendData(new DataPoint(xValue++, point), true, 100);
-
-        // update the Connection Status bar at the same time
-        PacketAnalysis.GenerateStatusBarText(PresentData.GetEngineStatus(),BTstatusText); // This function update the status bar
+            // update the Connection Status bar at the same time
+            PacketAnalysis.GenerateStatusBarText(PresentData.GetEngineStatus(), BTstatusText); // This function update the status bar
 
     }
 

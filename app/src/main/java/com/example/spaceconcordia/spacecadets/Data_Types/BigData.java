@@ -19,6 +19,7 @@ public class BigData implements Serializable {
     private static int FlowSen = 2;
     private static int PresSen = 13;
     private int NbSensors = TempSen + FlowSen + PresSen;
+    private boolean ActiveSens[];
     private DatabaseHelper databaseHelper ; //  todo needs to be instantiated properly
 
     private Temperature Temp_Sensor_List[];
@@ -40,7 +41,7 @@ public class BigData implements Serializable {
         Flow_Sensor_List = new Flow_Sensor[FlowSen];
         Pressure_Sensor_List = new Pressure_Sensor[PresSen];
         Sensor_List = new Sensor[TempSen+FlowSen+PresSen];
-
+        ActiveSens = new boolean[NbSensors];
         EngineStatus = 'D';
 
         for(int i = 0; i<TempSen; i++){
@@ -94,6 +95,7 @@ public class BigData implements Serializable {
     public String[] getAllSensorsByString(){return All_Sensor_List;}
 
     public String getSensorValueByListPosition(int position){
+
         if(position < TempSen){
             return String.valueOf(Temp_Sensor_List[position].GetValue());
         }
@@ -124,16 +126,35 @@ public class BigData implements Serializable {
                 All_Sensor_List = new String[PacketParts.length-1];
 
                 for (int i = 0; i < TempSen; i++) {
-                    Temp_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                    All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current value: " + Temp_Sensor_List[i].GetValue();
+                    if(!PacketParts[i + 1].equals("X")) {
+                        Temp_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
+                        All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current value: " + Temp_Sensor_List[i].GetValue();
+                        ActiveSens[i] = true;
+                    }else{
+                        All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Disconnected";
+                        Temp_Sensor_List[i].UpdateValue((short)-1);
+                    }
                 }
                 for (int i = 0; i < FlowSen; i++) {
+                    if(!PacketParts[i + TempSen + 1].equals("X")) {
                     Flow_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + 1], 16));
                     All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current value: " + Flow_Sensor_List[i].GetValue();
+                    }else{
+                        All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "Disconnected";
+                        Flow_Sensor_List[i].UpdateValue((short)-1);
+
+
+                    }
                 }
                 for (int i = 0; i < PresSen; i++) {
-                    Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
-                    All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current value: " + Pressure_Sensor_List[i].GetValue();
+                    if(!PacketParts[i + TempSen + FlowSen + 1].equals("X")) {
+                        Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
+                        All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current value: " + Pressure_Sensor_List[i].GetValue();
+                    }else{
+                        All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "Disconnected";
+                        Temp_Sensor_List[i].UpdateValue((short)-1);
+
+                    }
                 }
 
                 // send the selected sensor's data to the graphing activity when it is created/resumed
