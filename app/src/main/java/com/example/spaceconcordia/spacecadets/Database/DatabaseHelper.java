@@ -19,7 +19,6 @@ import java.util.List;
 public class DatabaseHelper  extends SQLiteOpenHelper {
 
     private static final String TAG = "DatabaseHelper";
-
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "sensorManager";
     private Context context = null;
@@ -38,7 +37,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
+        SQLiteDatabase sqLiteDatabase= this.getWritableDatabase();
 
     }
 
@@ -57,12 +56,11 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
                 + KEY_VALUE + "INTEGER NOT NULL"
                 + ")";
 
-        Log.d(TAG, "Table create SQL :" + CREATE_SENSOR_TABLE);
-        Log.d(TAG, "Table create SQL :" + CREATE_READINGS_TABLE);
-        db.execSQL(CREATE_SENSOR_TABLE);
-        db.execSQL(CREATE_READINGS_TABLE);
 
-        Log.d(TAG, "DB created");
+        //db.execSQL(CREATE_SENSOR_TABLE);
+        //db.execSQL(CREATE_READINGS_TABLE);
+
+
 
     }
 
@@ -76,175 +74,141 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     }
 
-    public void addTemperatureSensor(Temperature temperature, int index) {
+    public boolean addTemperatureSensor(Temperature temperature){
         String type = "Temperature";
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        if (temperature.getName() == null) {
-            values.put(KEY_NAME, index);
-        } else {
-            values.put(KEY_NAME, temperature.getName());
+        String name = temperature.getName();
+        SQLiteDatabase db= this.getWritableDatabase();
+        ContentValues contentValues= new ContentValues();
+        contentValues.put(KEY_NAME,name);
+        contentValues.put(KEY_TYPE,type);
+        long result = db.insert(TABLE_SENSORS,null, contentValues);
+        if( result == -1){
+            db.close();
+            return false;}
+        else{
+            db.close();
+            return true;
         }
-        values.put(KEY_TYPE, type);
-        values.put(KEY_VALUE, temperature.GetValue());
-
-        db.insert(TABLE_SENSORS, null, values);
-        db.close();
-
     }
 
-    public void addPressureSensor(Pressure_Sensor pressure, int index) {
-        String type = "Pressure";
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        if (pressure.getName() == null) {
-            values.put(KEY_NAME, index);
-        } else {
-            values.put(KEY_NAME, pressure.getName());
-        }
-        values.put(KEY_TYPE, type);
-        values.put(KEY_VALUE, pressure.GetValue());
-
-        db.insert(TABLE_SENSORS, null, values);
-        db.close();
-
-    }
-
-    public void addFlowSensor(Flow_Sensor flow, int index) {
+    public boolean addFlowSensor(Flow_Sensor flow){
         String type = "Flow";
+        String name = flow.getName();
+        SQLiteDatabase db= this.getWritableDatabase();
+        ContentValues contentValues= new ContentValues();
+        contentValues.put(KEY_NAME,name);
+        contentValues.put(KEY_TYPE,type);
+        long result = db.insert(TABLE_SENSORS,null, contentValues);
+        if( result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean addPressureSensor(Pressure_Sensor pressure){
+        String type = "Pressure";
+        String name = pressure.getName();
+        SQLiteDatabase db= this.getWritableDatabase();
+        ContentValues contentValues= new ContentValues();
+        contentValues.put(KEY_NAME,name);
+        contentValues.put(KEY_TYPE,type);
+        long result = db.insert(TABLE_SENSORS,null, contentValues);
+        if( result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean addReadings(int sensor_id,short value){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_SENSOR_ID,sensor_id);
+        contentValues.put(KEY_VALUE,value);
+        long result = db.insert(TABLE_READINGS,null, contentValues);
+        if( result == -1)
+            return false;
+        else
+            return true;
+
+    }
+
+    public String getname(int row){
+
+        String name="";
+        String rownum =Integer.toString(row);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        if (flow.getName() == null) {
-            values.put(KEY_NAME, index);
-        } else {
-            values.put(KEY_NAME, flow.getName());
-        }
-        values.put(KEY_TYPE, type);
-        values.put(KEY_VALUE, flow.GetValue());
 
-        db.insert(TABLE_SENSORS, null, values);
-        db.close();
-
-    }
-
-    // method that returns list of temperature sensors
-
-    public List<Temperature> getAllTemperatureSensors() {
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = null;
+        int id = -1;
         try {
 
-            cursor = sqLiteDatabase.query(TABLE_SENSORS, null, KEY_TYPE + " = ?", new String[]{"Temperature"}, null, null, null, null);
+            cursor = db.query(TABLE_SENSORS, null,
+                    KEY_ID + " = ? ", new String[]{rownum},
+                    null, null, null);
 
 
-            if (cursor != null)
-                if (cursor.moveToFirst()) {
-                    List<Temperature> temperature_sensor_list = new ArrayList<>();
-                    do {
-                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
-                        String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+            if (cursor.moveToFirst()) {
+                name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
 
-                        temperature_sensor_list.add(new Temperature(name));
-                    } while (cursor.moveToNext());
-
-                    return temperature_sensor_list;
-                }
-
+            }
         } catch (Exception e) {
-
-            Log.d(TAG, "Exception" + e.getMessage());
-            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Exception: " + e.getMessage());
         } finally {
             if (cursor != null)
                 cursor.close();
-            sqLiteDatabase.close();
+            db.close();
         }
-        return
-                Collections.emptyList();
+
+        return name;
 
     }
 
 
-    // method that returns list of pressure sensors
 
-    public List<Pressure_Sensor> getAllPressureSensors() {
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-
-            cursor = sqLiteDatabase.query(TABLE_SENSORS, null, KEY_TYPE + " = ?", new String[]{"Pressure"}, null, null, null, null);
-
-
-            if (cursor != null)
-                if (cursor.moveToFirst()) {
-                    List<Pressure_Sensor> pressure_sensor_list = new ArrayList<>();
-                    do {
-                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
-                        String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
-
-                        pressure_sensor_list.add(new Pressure_Sensor(name));
-                    } while (cursor.moveToNext());
-
-                    return pressure_sensor_list;
+//This method returns the sensor Table as a String so it can be written in a text file
+    public String printSensorTable(){
+        String Table="";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM " + TABLE_SENSORS , null);
+        if(cur.getCount() !=0){
+            cur.moveToFirst();
+            do{
+                String row_values="";
+                for(int i=0; i<cur.getColumnCount();i++){
+                    row_values= row_values + "  " + cur.getString(i);
                 }
-
-        } catch (Exception e) {
-
-            Log.d(TAG, "Exception" + e.getMessage());
-            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (cursor != null)
-                cursor.close();
-            sqLiteDatabase.close();
+                Table= Table + " \n " + row_values;
+            }while (cur.moveToNext());
         }
-        return
-                Collections.emptyList();
 
+        return Table;
     }
 
-
-    // method that returns list of flow sensors
-
-    public List<Flow_Sensor> getAllFlowSensors() {
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-
-            cursor = sqLiteDatabase.query(TABLE_SENSORS, null, KEY_TYPE + " = ?", new String[]{"Flow"}, null, null, null, null);
-
-
-            if (cursor != null)
-                if (cursor.moveToFirst()) {
-                    List<Flow_Sensor> flow_sensor_list = new ArrayList<>();
-                    do {
-                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
-                        String name = cursor.getString(cursor.getColumnIndex(KEY_NAME));
-
-                        flow_sensor_list.add(new Flow_Sensor(name));
-                    } while (cursor.moveToNext());
-
-                    return flow_sensor_list;
+//This method returns the readings table as a string so it can be written in the text file
+    public String printReadingTable(){
+        String Table="";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM " + TABLE_READINGS , null);
+        if(cur.getCount() !=0){
+            cur.moveToFirst();
+            do{
+                String row_values="";
+                for(int i=0; i<cur.getColumnCount();i++){
+                    row_values= row_values + "  " + cur.getString(i);
                 }
-
-        } catch (Exception e) {
-
-            Log.d(TAG, "Exception" + e.getMessage());
-            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (cursor != null)
-                cursor.close();
-            sqLiteDatabase.close();
+                Table= Table + " \n " + row_values;
+            }while (cur.moveToNext());
         }
-        return
-                Collections.emptyList();
 
+        return Table;
     }
 
 
-    // Method that retrieves ID of a sensor from Sensor Table
+
+
+
+
     public int getSensorId(String name) {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -264,7 +228,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
             }
         } catch (Exception e) {
             Log.d(TAG, "Exception: " + e.getMessage());
-            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -272,54 +236,6 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         }
 
         return id;
-    }
-
-
-    // Method that input sensor readings in the readings table
-    public void addReading(int sensor_id, short value) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_SENSOR_ID,sensor_id);
-        values.put(KEY_VALUE,value);
-
-
-        db.insert(TABLE_READINGS, null, values);
-        db.close();
-    }
-
-    // Method that returns a list of readingds from one sensor
-    public List<Integer> getReadings(int sensor_Id){
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        String sensor_id= Integer.toString(sensor_Id);
-        Cursor cursor = null;
-        try {
-
-            cursor = sqLiteDatabase.query(TABLE_READINGS, null, KEY_SENSOR_ID+ " = ?", new String[]{sensor_id}, null, null, null, null);
-
-
-            if (cursor != null)
-                if (cursor.moveToFirst()) {
-                    List<Integer> readingsList = new ArrayList<>();
-                    do {
-                        int value = cursor.getInt(cursor.getColumnIndex(KEY_VALUE));
-
-                        readingsList.add(value);
-                    } while (cursor.moveToNext());
-
-                    return readingsList;
-                }
-
-        } catch (Exception e) {
-
-            Log.d(TAG, "Exception" + e.getMessage());
-            Toast.makeText(context, "Operation failed", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (cursor != null)
-                cursor.close();
-            sqLiteDatabase.close();
-        }
-        return
-                Collections.emptyList();
     }
 }
 

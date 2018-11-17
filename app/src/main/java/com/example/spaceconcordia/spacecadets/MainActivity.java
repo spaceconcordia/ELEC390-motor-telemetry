@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -34,6 +36,7 @@ import com.example.spaceconcordia.spacecadets.Bluetooth.OfflineTestThread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.packetanalysis;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 import com.example.spaceconcordia.spacecadets.Data_Types.Pressure_Sensor;
+import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
 
 import java.io.IOException;
 
@@ -77,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
     private packetanalysis PacketAnalysis;
 
+    public DatabaseHelper senserDb;
+
+    private static final String FILE_NAME = "SPACE_CADETS.txt";
+
     public MainActivity() {
     }
 
@@ -85,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        senserDb=new DatabaseHelper(this);
 
         this.setupUI();
 
@@ -205,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
             SaveButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    PresentData.writeExternalStorage();
+                    savetofile(getCurrentFocus());
                     return false;
                 }
 
@@ -241,6 +249,32 @@ public class MainActivity extends AppCompatActivity {
         adapter.clear();
         adapter.addAll(sensorData);
         adapter.notifyDataSetChanged();
+    }
+
+    public void savetofile(View v){
+        String text="SpaceCadets";
+        /*TODO get contents of DATABASE
+        * TODO Convert into string
+        */
+        FileOutputStream fos = null;
+        try {
+            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+            fos.write(text.getBytes());
+            //todo write database contents into file with fos.write(databaseString.getBytes()) command
+            Toast.makeText(this,"Data saved to " + getFilesDir() + "/" + FILE_NAME,Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if( fos != null ){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
         /***

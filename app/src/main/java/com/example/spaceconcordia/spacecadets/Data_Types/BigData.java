@@ -165,41 +165,6 @@ public class BigData implements Serializable {
         return EngineStatus; // Something Went wrong! Bad packet
     }
 
-    public void writeExternalStorage(){
-        //use a button that calls this function
-        String state = android.os.Environment.getExternalStorageState();
-
-        if(android.os.Environment.MEDIA_MOUNTED.equals(state)){
-
-            File Root = android.os.Environment.getExternalStorageDirectory();
-            File Dir = new File(Root.getAbsoluteFile()+"/DataBase");
-
-            if(!Dir.exists()){
-               Dir.mkdir();
-            }
-
-            String Message = databaseHelper.toString();
-            File file = new File(Dir, "Database.db");
-                try {
-
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    fileOutputStream.write(Message.getBytes());
-                    fileOutputStream.close();
-
-                    Toast.makeText(context, "Database Saved", Toast.LENGTH_SHORT).show();
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-        }
-        else{
-            Toast.makeText(context, "Failed to Find Storage Device", Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     public char GetEngineStatus(){return EngineStatus;}
 
