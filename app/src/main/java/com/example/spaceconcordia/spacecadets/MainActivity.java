@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -23,10 +24,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.UUID;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.BTthread;
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     public DatabaseHelper senserDb;
 
-    private static final String FILE_NAME = "SPACE_CADETS.txt";
+    private static String FILE_NAME = "SPACE_CADETS.txt";
 
     public MainActivity() {
     }
@@ -255,30 +258,49 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    public void savetofile(View v){
-        String text="SpaceCadets";
-        /*TODO get contents of DATABASE
-        * TODO Convert into string
-        */
-        FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-            fos.write(text.getBytes());
-            //todo write database contents into file with fos.write(databaseString.getBytes()) command
-            Toast.makeText(this,"Data saved to " + getFilesDir() + "/" + FILE_NAME,Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if( fos != null ){
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public void savetofile(View v) {
+
+        String text = "SpaceCadets";
+            FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".txt";
+
+            /*TODO get contents of DATABASE
+             * TODO Convert into string
+             */
+
+            String root = Environment.getExternalStorageDirectory().toString();
+            File myDir = new File(root+"/Rocket_Telemetry_LOG/");
+            if (!myDir.exists()) {
+                myDir.mkdirs();
+            }
+
+            File file = new File(myDir, FILE_NAME);
+            FileOutputStream fos = null;
+            if (file.exists()) {
+                file.delete();
+            }
+            try {
+                if (myDir.exists()) { //Write on External Storage if the dir exist
+                    fos = new FileOutputStream(file);
+                    Toast.makeText(this, "Data saved to " + file.getCanonicalPath() + "/" + FILE_NAME, Toast.LENGTH_SHORT).show();
+                } else { //If not write on the internal storage
+                    fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
+                    Toast.makeText(this, "Data saved to Internal Storage : " + FILE_NAME, Toast.LENGTH_SHORT).show();
+                }
+                fos.write(text.getBytes());
+                //todo write database contents into file with fos.write(databaseString.getBytes()) command
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
     }
 
         /***
