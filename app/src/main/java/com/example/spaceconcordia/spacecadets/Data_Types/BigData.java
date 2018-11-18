@@ -139,19 +139,6 @@ public class BigData implements Serializable {
                     currentActivity.updateDataPoint(getSensorValueByListPosition(currentActivity.getPosition()));
                 }
 
-
-                /**
-                 *
-                 * Temperature[0] = Short.parseShort(Sensors[0],16); // This convert the HEX string to short
-                 * ...
-                 * Temperature[13] =Short.parseShort(Sensors[13],16);
-                 * Flow_Sensor[0] = Short.parseShort(Sensors[14],16);
-                 * Flow_Sensor[1] = Short.parseShort(Sensors[15],16);
-                 * Pressure_Sensor[0]  = Short.parseShort(Sensors[16],16);
-                 * ...
-                 * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
-                 */
-
             } else if (PacketParts.length == 1) {
              EngineStatus = PacketParts[0].charAt(0);
              } else{

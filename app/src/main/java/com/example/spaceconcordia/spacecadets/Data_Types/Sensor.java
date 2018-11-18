@@ -14,6 +14,4 @@ public class Sensor implements Serializable {
     public String getName(){return name;}
     public short getValue(){return value;}
 
-
-
 }

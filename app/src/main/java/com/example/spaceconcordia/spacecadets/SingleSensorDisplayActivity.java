@@ -36,7 +36,6 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private BigData PresentData;
     private boolean BTconnected;
     private int yMaxValue = 100;
-    private int xMaxValue = 500;
     private Viewport viewport;
     private Menu graphMenu;
 
@@ -56,42 +55,6 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
     }
 
-    //OnClickListeners for the Actionbar items
-    @Override
-    public boolean onCreateOptionsMenu (Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.graph_menu, menu);
-
-        this.graphMenu = menu;
-        this.zoomInButton = graphMenu.findItem(R.id.zoomInButton);
-        this.zoomOutButton = graphMenu.findItem(R.id.zoomOutButton);
-
-        zoomInButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                    viewport = graph.getViewport();
-                    viewport.setMaxX(10000);
-                    xMaxValue = 100;
-
-                return false;
-            }
-        });
-
-        zoomOutButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                    viewport = graph.getViewport();
-                    viewport.setMaxX(600);
-                    xMaxValue = 600;
-
-                return false;
-            }
-        });
-
-        return true;
-    }
 
     @Override
     public void onResume() {
@@ -124,7 +87,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         viewport.setYAxisBoundsManual(true);
         viewport.setMinY(0);
         viewport.setMaxY(yMaxValue);
-        viewport.setMaxX(xMaxValue);
+        viewport.setMaxX(100);
         viewport.setScalable(true);
 
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
@@ -157,7 +120,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
             }
         }
             //append a new data point to the graph every time the sensor's value get updated
-            series.appendData(new DataPoint(xValue++, point), true, xMaxValue);
+            series.appendData(new DataPoint(xValue++, point), true, 100);
 
             // update the Connection Status bar at the same time
             PacketAnalysis.GenerateStatusBarText(PresentData.GetEngineStatus(), BTstatusText); // This function update the status bar

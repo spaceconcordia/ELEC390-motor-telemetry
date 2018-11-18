@@ -8,5 +8,9 @@
     <string name="Toast_Emulator">Emulator cannot handle Bluetooth</string>
     <string name="Title_Bluetooth_Disconnect">Disconnect Bluetooth?</string>
     <string name="Button_Bluetooth_Disconnect">Disconnect</string>
+    <string name="Save_Data_Prompt">Save sensor data to file?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

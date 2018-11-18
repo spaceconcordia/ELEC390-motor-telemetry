@@ -213,6 +213,9 @@ public class MainActivity extends AppCompatActivity {
             SaveButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+                    Intent intent = new Intent(MainActivity.this, SaveData.class);
+                    startActivity(intent);
+
                     savetofile(getCurrentFocus());
                     return false;
                 }
