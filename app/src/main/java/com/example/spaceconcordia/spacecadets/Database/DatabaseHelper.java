@@ -35,6 +35,20 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
     private static final String KEY_SENSOR_ID = "sensor_id";
     private static final String KEY_VALUE = "value";
 
+    private static final String CREATE_SENSOR_TABLE= "CREATE TABLE " + TABLE_SENSORS + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_NAME + " TEXT, "
+            + KEY_TYPE + " TEXT, "
+            + KEY_VALUE + " TEXT "
+            + ")";
+
+    private static final String CREATE_READING_TABLE="CREATE TABLE " + TABLE_READINGS + "("
+            + KEY_IDs + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_SENSOR_ID + " INTEGER NOT NULL, "
+            + KEY_VALUE + " INTEGER NOT NULL "
+            + ")";
+
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase sqLiteDatabase= this.getWritableDatabase();
@@ -44,21 +58,11 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_SENSOR_TABLE = "CREATE TABLE" + TABLE_SENSORS + "("
-                + KEY_ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + KEY_NAME + "TEXT NOT NULL,"
-                + KEY_TYPE + "TEXT NOT NULL"
-                + KEY_VALUE + "TEXT NOT FULL"
-                + ")";
-        String CREATE_READINGS_TABLE = "CREATE TABLE" + TABLE_READINGS + "("
-                + KEY_IDs + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + KEY_SENSOR_ID + "INTEGER NOT NULL,"
-                + KEY_VALUE + "INTEGER NOT NULL"
-                + ")";
 
 
-        //db.execSQL(CREATE_SENSOR_TABLE);
-        //db.execSQL(CREATE_READINGS_TABLE);
+
+        db.execSQL(CREATE_SENSOR_TABLE);
+        db.execSQL(CREATE_READING_TABLE);
 
 
 
