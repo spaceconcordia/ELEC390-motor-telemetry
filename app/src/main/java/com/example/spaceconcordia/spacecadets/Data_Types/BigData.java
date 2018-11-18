@@ -1,16 +1,10 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
-import com.example.spaceconcordia.spacecadets.R;
+import com.example.spaceconcordia.spacecadets.Database.DBhelper;
 import com.example.spaceconcordia.spacecadets.SingleSensorDisplayActivity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
@@ -20,7 +14,6 @@ public class BigData implements Serializable {
     private static int PresSen = 13;
     private int NbSensors = TempSen + FlowSen + PresSen;
     private boolean ActiveSens[];
-    private DatabaseHelper databaseHelper ; //  todo needs to be instantiated properly
 
     private Temperature Temp_Sensor_List[];
     private Flow_Sensor Flow_Sensor_List[];
@@ -31,6 +24,7 @@ public class BigData implements Serializable {
     private char EngineStatus;
 
     private static final String TAG = "BigData";
+
 
     Context context;
     private static Context currentContext;
@@ -58,29 +52,6 @@ public class BigData implements Serializable {
             Sensor_List[i+TempSen+FlowSen] = Pressure_Sensor_List[i];
         }
 
-
-        /**
-         * // -- This is not implemented -> program crash on startup
-        for (int i=0; i<TempSen; i++){
-            databaseHelper.addTemperatureSensor(Temp_Sensor_List[i], i);
-        }
-        for(int i=0; i<FlowSen; i++){
-            databaseHelper.addFlowSensor(Flow_Sensor_List[i], i);
-        }
-        for(int i=0; i<PresSen; i++){
-             databaseHelper.addPressureSensor(Pressure_Sensor_List[i], i);
-        }*/
-
-        // if all the sensors use the same max and min values, then we need to change them once
-        // in their own class. But if there are sensors that have their own min and max requirements
-        // we can easily initiate them here, all we need to do is add another constructor.
-        // for example, Temp_Sensor_List[2].ChangeMax(int max)
-        // For Flow and Pressure the syntax is Flow_SensorList.ChangeMinMax(int min, int max)
-        // This will make the initialisation way simpler anytime we want to do this!!
-        // Special Initialisation Starts from HERE
-
-
-        // To HERE
     }
 
     private Context getContext(){
@@ -157,6 +128,8 @@ public class BigData implements Serializable {
                     }
                 }
 
+
+
                 // send the selected sensor's data to the graphing activity when it is created/resumed
                 if(SingleSensorDisplayActivity.isActivityInFront()){
                     SingleSensorDisplayActivity currentActivity = (SingleSensorDisplayActivity) getContext();
@@ -189,7 +162,15 @@ public class BigData implements Serializable {
 
     public char GetEngineStatus(){return EngineStatus;}
 
+
+    public short GetSensorValue(int Index) {
+        if (Index < TempSen) {
+            return Temp_Sensor_List[Index].GetValue();
+        } else if (Index < TempSen+FlowSen) {
+            return Flow_Sensor_List[Index-TempSen].GetValue();
+        } else if (Index < NbSensors) {
+            return Pressure_Sensor_List[Index-TempSen-FlowSen].GetValue();
+        }
+        return 0; // Return 0 for error
+    }
 }
-
-
-
