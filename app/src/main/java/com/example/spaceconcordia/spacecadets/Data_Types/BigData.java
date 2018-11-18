@@ -9,10 +9,7 @@ import java.io.Serializable;
 import java.util.regex.Pattern;
 
 public class BigData implements Serializable {
-    private static int TempSen = 14;
-    private static int FlowSen = 2;
-    private static int PresSen = 13;
-    private int NbSensors = TempSen + FlowSen + PresSen;
+    private Sensor_List SensList;
     private boolean ActiveSens[];
 
 
@@ -29,16 +26,13 @@ public class BigData implements Serializable {
 
     public BigData() {
 
-
-        Sensor_List = new Sensor[NbSensors];
-        ActiveSens = new boolean[NbSensors];
+        SensList = new Sensor_List();
+        Sensor_List = new Sensor[SensList.getNbSensors()];
+        ActiveSens = new boolean[SensList.getNbSensors()];
         EngineStatus = 'D';
 
-        for(int i = 0; i<NbSensors; i++){
-
-            // todo Make a file with proper names for sensors, and assign proper types to sensor
-            Sensor_List[i] = new Sensor("temp" + i,0);
-
+        for(int i = 0; i<SensList.getNbSensors(); i++){
+            Sensor_List[i] = new Sensor(SensList.getname(i),SensList.gettype(i));
         }
     }
 
@@ -55,7 +49,7 @@ public class BigData implements Serializable {
 
     public String getSensorValueByListPosition(int position){
 
-        if(position < NbSensors){
+        if(position < SensList.getNbSensors()){
             return String.valueOf(Sensor_List[position].getValue());
         }
         return "Error";
@@ -70,7 +64,7 @@ public class BigData implements Serializable {
 
         String[] PacketParts = Packet.split(Pattern.quote("-"));
 
-         if (PacketParts.length == NbSensors + 1) { // Reject the packet if there is not 29+1 sensors count in it
+         if (PacketParts.length == SensList.getNbSensors() + 1) { // Reject the packet if there is not 29+1 sensors count in it
 
                 //First PacketPart is controller status
                 if (!PacketParts[0].isEmpty()) {
@@ -79,7 +73,7 @@ public class BigData implements Serializable {
 
                 All_Sensor_List = new String[PacketParts.length-1];
 
-                for (int i = 0; i < NbSensors; i++) {
+                for (int i = 0; i < SensList.getNbSensors(); i++) {
                     if(!PacketParts[i + 1].equals("X")) {
                         Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
                         All_Sensor_List[i] = Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].getValue();
@@ -111,7 +105,7 @@ public class BigData implements Serializable {
 
 
     public short GetSensorValue(int Index) {
-        if (Index < NbSensors) {
+        if (Index < SensList.getNbSensors()) {
             return Sensor_List[Index].getValue();
         }
         return 0; // Return 0 for error
