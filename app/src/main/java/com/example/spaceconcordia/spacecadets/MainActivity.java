@@ -8,15 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,8 +35,7 @@ import com.example.spaceconcordia.spacecadets.Bluetooth.DisconnectDialog;
 import com.example.spaceconcordia.spacecadets.Bluetooth.OfflineTestThread;
 import com.example.spaceconcordia.spacecadets.Bluetooth.packetanalysis;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
-import com.example.spaceconcordia.spacecadets.Data_Types.Pressure_Sensor;
-import com.example.spaceconcordia.spacecadets.Database.DatabaseHelper;
+import com.example.spaceconcordia.spacecadets.Database.DBhelper;
 
 import java.io.IOException;
 
@@ -58,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView BTstatusText;
     private Menu menu;
 
+    //DB helper
+    private DBhelper DBmanager;
     //Icons
     private Drawable BluetoothConnect;
     private Drawable BluetoothDisc;
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
     private DisconnectDialog DiscDialog;
-
     private Handler writeHandler;
 
     //Bluetooth Thread
@@ -80,12 +77,10 @@ public class MainActivity extends AppCompatActivity {
     //PRESENT DATA
     private BigData PresentData;
     private char CurrentStatus;
-
     private packetanalysis PacketAnalysis;
 
-    public DatabaseHelper senserDb;
 
-    private static String FILE_NAME = "SPACE_CADETS.txt";
+    private static String FILE_NAME;
 
     public MainActivity() {
     }
@@ -95,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        senserDb=new DatabaseHelper(this);
 
         this.setupUI();
 
@@ -132,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         BTconnected = false;
         OfflineThreadActivated = false;
+        DBmanager = new DBhelper(this);
         PresentData = new BigData(); // Initialize PresentData
 
         BluetoothSelect(); // Initial bluetooth connection
@@ -258,8 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void savetofile(View v) {
 
-        String text = "SpaceCadets";
-            FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".txt";
+            FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".csv";
 
             /*TODO get contents of DATABASE
              * TODO Convert into string
@@ -284,8 +278,10 @@ public class MainActivity extends AppCompatActivity {
                     fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                     Toast.makeText(this, "Data saved to Internal Storage : " + FILE_NAME, Toast.LENGTH_SHORT).show();
                 }
-                fos.write(text.getBytes());
-                //todo write database contents into file with fos.write(databaseString.getBytes()) command
+
+                DBmanager.SaveToFile(fos); // this function write to file
+
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -474,6 +470,9 @@ public class MainActivity extends AppCompatActivity {
         if (CurrentStatus =='T'){ //Timed out! Disconnect Bluetooth
             KillThreads();
         }
+
+        DBmanager.insertValues(PresentData);
+
     }
 
 }
