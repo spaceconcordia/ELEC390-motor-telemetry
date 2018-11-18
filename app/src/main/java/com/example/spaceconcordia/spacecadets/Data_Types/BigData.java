@@ -15,9 +15,7 @@ public class BigData implements Serializable {
     private int NbSensors = TempSen + FlowSen + PresSen;
     private boolean ActiveSens[];
 
-    private Temperature Temp_Sensor_List[];
-    private Flow_Sensor Flow_Sensor_List[];
-    private Pressure_Sensor Pressure_Sensor_List[];
+
     private Sensor Sensor_List[];
     private String All_Sensor_List[];
 
@@ -31,27 +29,15 @@ public class BigData implements Serializable {
 
     public BigData() {
 
-        Temp_Sensor_List = new Temperature[TempSen];
-        Flow_Sensor_List = new Flow_Sensor[FlowSen];
-        Pressure_Sensor_List = new Pressure_Sensor[PresSen];
-        Sensor_List = new Sensor[TempSen+FlowSen+PresSen];
+
+        Sensor_List = new Sensor[NbSensors];
         ActiveSens = new boolean[NbSensors];
         EngineStatus = 'D';
 
-        for(int i = 0; i<TempSen; i++){
+        for(int i = 0; i<NbSensors; i++){
             // These are just temporary names for now
-            Temp_Sensor_List[i] = new Temperature("Temperature Sensor " + (i+1));
-            Sensor_List[i] = Temp_Sensor_List[i];
+            Sensor_List[i] = new Sensor("temp" + i,0);
         }
-        for(int i = 0; i<FlowSen;i++){
-            Flow_Sensor_List[i] = new Flow_Sensor("Flow Sensor " + (i+1));
-            Sensor_List[i+TempSen] = Flow_Sensor_List[i];
-        }
-        for(int i = 0; i<PresSen; i++) {
-            Pressure_Sensor_List[i] = new Pressure_Sensor("Pressure Sensor " + (i+1));
-            Sensor_List[i+TempSen+FlowSen] = Pressure_Sensor_List[i];
-        }
-
     }
 
     private Context getContext(){
@@ -67,21 +53,16 @@ public class BigData implements Serializable {
 
     public String getSensorValueByListPosition(int position){
 
-        if(position < TempSen){
-            return String.valueOf(Temp_Sensor_List[position].GetValue());
+        if(position < NbSensors){
+            return String.valueOf(Sensor_List[position].getValue());
         }
-        else if(position < TempSen + FlowSen){
-            return String.valueOf(Flow_Sensor_List[position-TempSen].GetValue());
-        }
-        else{
-            return String.valueOf(Pressure_Sensor_List[position-(TempSen+FlowSen)].GetValue());
-        }
+        return "Error";
     }
 
     /**
-     * Sample packet : 445‑A90‑21B2‑E15‑2281‑1147‑140E‑1550‑2023‑70B‑F45‑D71‑139A‑FA4‑14C7‑1F40‑E04‑15B7‑A84‑13E4‑15C7‑1FD0‑1A5F‑1FD2‑171‑2164‑2113‑5E1‑2233
+     * Sample packet : S-445‑A90‑21B2‑E15‑2281‑1147‑140E‑1550‑2023‑70B‑F45‑D71‑139A‑FA4‑14C7‑1F40‑E04‑15B7‑A84‑13E4‑15C7‑1FD0‑1A5F‑1FD2‑171‑2164‑2113‑5E1‑2233
      * The packet are in hexadecimals and values are separated by '-'
-     * 29 sensors in order : Temperature sensors 0-13 - flow sensors 14-15 - Pressure sensors 16-28
+     * 29 sensors in order : Status - Temperature sensors 0-13 - flow sensors 14-15 - Pressure sensors 16-28
      */
     public char parse(String Packet) {
 
@@ -96,39 +77,16 @@ public class BigData implements Serializable {
 
                 All_Sensor_List = new String[PacketParts.length-1];
 
-                for (int i = 0; i < TempSen; i++) {
+                for (int i = 0; i < NbSensors; i++) {
                     if(!PacketParts[i + 1].equals("X")) {
-                        Temp_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                        All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Current value: " + Temp_Sensor_List[i].GetValue();
+                        Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
+                        All_Sensor_List[i] = Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].getValue();
                         ActiveSens[i] = true;
                     }else{
-                        All_Sensor_List[i] = Temp_Sensor_List[i].getName() + "\n" + "Disconnected";
-                        Temp_Sensor_List[i].UpdateValue((short)-1);
+                        All_Sensor_List[i] = Sensor_List[i].getName() + "\n" + "Disconnected";
+                        Sensor_List[i].UpdateValue((short)-1);
                     }
                 }
-                for (int i = 0; i < FlowSen; i++) {
-                    if(!PacketParts[i + TempSen + 1].equals("X")) {
-                    Flow_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + 1], 16));
-                    All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "\n" + "Current value: " + Flow_Sensor_List[i].GetValue();
-                    }else{
-                        All_Sensor_List[TempSen + i] = Flow_Sensor_List[i].getName() + "Disconnected";
-                        Flow_Sensor_List[i].UpdateValue((short)-1);
-
-
-                    }
-                }
-                for (int i = 0; i < PresSen; i++) {
-                    if(!PacketParts[i + TempSen + FlowSen + 1].equals("X")) {
-                        Pressure_Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + TempSen + FlowSen + 1], 16));
-                        All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "\n" + "Current value: " + Pressure_Sensor_List[i].GetValue();
-                    }else{
-                        All_Sensor_List[TempSen + FlowSen + i] = Pressure_Sensor_List[i].getName() + "Disconnected";
-                        Temp_Sensor_List[i].UpdateValue((short)-1);
-
-                    }
-                }
-
-
 
                 // send the selected sensor's data to the graphing activity when it is created/resumed
                 if(SingleSensorDisplayActivity.isActivityInFront()){
@@ -137,19 +95,6 @@ public class BigData implements Serializable {
                     //pass the new data point associated with the selected sensor for the graphing activity
                     currentActivity.updateDataPoint(getSensorValueByListPosition(currentActivity.getPosition()));
                 }
-
-
-                /**
-                 *
-                 * Temperature[0] = Short.parseShort(Sensors[0],16); // This convert the HEX string to short
-                 * ...
-                 * Temperature[13] =Short.parseShort(Sensors[13],16);
-                 * Flow_Sensor[0] = Short.parseShort(Sensors[14],16);
-                 * Flow_Sensor[1] = Short.parseShort(Sensors[15],16);
-                 * Pressure_Sensor[0]  = Short.parseShort(Sensors[16],16);
-                 * ...
-                 * Pressure_Sensor[12]  = Short.parseShort(Sensors[28],16);
-                 */
 
             } else if (PacketParts.length == 1) {
              EngineStatus = PacketParts[0].charAt(0);
@@ -164,12 +109,8 @@ public class BigData implements Serializable {
 
 
     public short GetSensorValue(int Index) {
-        if (Index < TempSen) {
-            return Temp_Sensor_List[Index].GetValue();
-        } else if (Index < TempSen+FlowSen) {
-            return Flow_Sensor_List[Index-TempSen].GetValue();
-        } else if (Index < NbSensors) {
-            return Pressure_Sensor_List[Index-TempSen-FlowSen].GetValue();
+        if (Index < NbSensors) {
+            return Sensor_List[Index].getValue();
         }
         return 0; // Return 0 for error
     }
