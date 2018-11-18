@@ -1,8 +1,9 @@
 package com.example.spaceconcordia.spacecadets.Data_Types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Sensor_List {
+public class Sensor_List implements Serializable {
     private int NbSensors = 29;
     private ArrayList<String> SensorName;
     private ArrayList<Integer> SensorType;
