@@ -35,8 +35,10 @@ public class BigData implements Serializable {
         EngineStatus = 'D';
 
         for(int i = 0; i<NbSensors; i++){
-            // These are just temporary names for now
+
+            // todo Make a file with proper names for sensors, and assign proper types to sensor
             Sensor_List[i] = new Sensor("temp" + i,0);
+
         }
     }
 
