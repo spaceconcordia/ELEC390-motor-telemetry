@@ -2,6 +2,7 @@ package com.example.spaceconcordia.spacecadets.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,6 +11,11 @@ import android.widget.Toast;
 
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 import com.example.spaceconcordia.spacecadets.Database.DBConfig;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 
 
 // Original SQLlite database helper by Tawfiq Jawhar
@@ -25,18 +31,21 @@ public class DBhelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = DBConfig.DATABASE_NAME;
 
     private Context context = null;
+    private SQLiteDatabase db;
+
+    private char DELIMITER = ';';
+
     // Constructor
     public DBhelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase db) {
 
         // Create tables SQL execution
-        String CREATE_ASSIGNMENT_TABLE = "CREATE TABLE " + DBConfig.TABLE_TELEMETRY + "("
+        String Create_Table = "CREATE TABLE " + DBConfig.TABLE_TELEMETRY + "("
                 + DBConfig.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + DBConfig.Time_ms + " LONG DEFAULT 0, "
                 + DBConfig.Status + " STRING NOT NULL, "
@@ -71,12 +80,15 @@ public class DBhelper extends SQLiteOpenHelper {
                 + DBConfig.sens29 + " SHORT DEFAULT 0"
                 + ")";
 
-        Log.d(TAG,"Table create SQL: " + CREATE_ASSIGNMENT_TABLE);
+        Log.d(TAG,"Table create SQL: " + Create_Table);
 
-        db.execSQL(CREATE_ASSIGNMENT_TABLE);
+        db.execSQL(Create_Table);
 
         Log.d(TAG,"DB created!");
+
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -94,9 +106,9 @@ public class DBhelper extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        String Status = "" + CurrentValues.GetEngineStatus();
-        contentValues.put(DBConfig.Status, Status);
+        String Status =  "" + CurrentValues.GetEngineStatus();
         contentValues.put(DBConfig.Time_ms, System.currentTimeMillis() );
+        contentValues.put(DBConfig.Status, Status);
         contentValues.put(DBConfig.sens1, CurrentValues.GetSensorValue(0));
         contentValues.put(DBConfig.sens2, CurrentValues.GetSensorValue(1));
         contentValues.put(DBConfig.sens3, CurrentValues.GetSensorValue(2));
@@ -129,7 +141,7 @@ public class DBhelper extends SQLiteOpenHelper {
 
 
         try {
-            id = sqLiteDatabase.insertOrThrow(DBConfig.TABLE_TELEMETRY, null, contentValues);
+            id = sqLiteDatabase.insert(DBConfig.TABLE_TELEMETRY, null, contentValues);
         } catch (SQLiteException e){
             Log.d(TAG,"Exception: " + e.getMessage());
             Toast.makeText(context, "Operation failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -141,6 +153,88 @@ public class DBhelper extends SQLiteOpenHelper {
     }
 
     //Delete all Assignment with the same course code
-    public void DropDB(String codeCourse) {
+    public void SaveToFile(FileOutputStream fos) {
+
+
+        String Header = String.valueOf(System.currentTimeMillis()) +" : " + Calendar.getInstance().getTime() + "\n\r"+
+                "ID" + DELIMITER + DBConfig.Time_ms + DELIMITER + DBConfig.Status + DELIMITER +
+                DBConfig.sens1 + DELIMITER + DBConfig.sens2 + DELIMITER + DBConfig.sens3 + DELIMITER + DBConfig.sens4 + DELIMITER + DBConfig.sens5 + DELIMITER +
+                DBConfig.sens6 + DELIMITER + DBConfig.sens7 + DELIMITER + DBConfig.sens8 + DELIMITER + DBConfig.sens9 + DELIMITER + DBConfig.sens10 + DELIMITER +
+                DBConfig.sens11 + DELIMITER + DBConfig.sens12 + DELIMITER + DBConfig.sens13 + DELIMITER + DBConfig.sens14 + DELIMITER + DBConfig.sens15 + DELIMITER +
+                DBConfig.sens16 + DELIMITER + DBConfig.sens17 + DELIMITER + DBConfig.sens18 + DELIMITER + DBConfig.sens19 + DELIMITER + DBConfig.sens20 + DELIMITER +
+                DBConfig.sens21 + DELIMITER + DBConfig.sens22 + DELIMITER + DBConfig.sens23 + DELIMITER + DBConfig.sens24 + DELIMITER + DBConfig.sens25 + DELIMITER +
+                DBConfig.sens26 + DELIMITER + DBConfig.sens27 + DELIMITER + DBConfig.sens28 + DELIMITER + DBConfig.sens29+ "\n\r";
+
+        try {
+            fos.write(Header.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from " + DBConfig.TABLE_TELEMETRY, null);
+
+        String Buffer = "";
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Buffer = String.valueOf(cursor.getInt(cursor.getColumnIndex(DBConfig.COLUMN_ID))) + DELIMITER +
+                        String.valueOf(cursor.getLong(cursor.getColumnIndex(DBConfig.Time_ms))) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.Status)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens1)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens2)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens3)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens4)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens5)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens6)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens7)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens8)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens9)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens10)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens11)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens12)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens13)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens14)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens15)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens16)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens17)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens18)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens19)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens20)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens21)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens22)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens23)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens24)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens25)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens26)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens27)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens28)) + DELIMITER +
+                        cursor.getString(cursor.getColumnIndex(DBConfig.sens29)) + "\n\r";
+
+                try {
+                    fos.write(Buffer.getBytes());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                cursor.moveToNext();
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        cursor.close();
+        db.delete(DBConfig.TABLE_TELEMETRY,null,null);
+        db.close();
+
     }
     }

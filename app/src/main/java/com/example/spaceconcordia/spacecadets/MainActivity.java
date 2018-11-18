@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private packetanalysis PacketAnalysis;
 
 
-    private static String FILE_NAME = "SPACE_CADETS.txt";
+    private static String FILE_NAME;
 
     public MainActivity() {
     }
@@ -255,8 +255,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void savetofile(View v) {
 
-        String text = "SpaceCadets";
-            FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".txt";
+            FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".csv";
 
             /*TODO get contents of DATABASE
              * TODO Convert into string
@@ -281,8 +280,10 @@ public class MainActivity extends AppCompatActivity {
                     fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
                     Toast.makeText(this, "Data saved to Internal Storage : " + FILE_NAME, Toast.LENGTH_SHORT).show();
                 }
-                fos.write(text.getBytes());
-                //todo write database contents into file with fos.write(databaseString.getBytes()) command
+
+                DBmanager.SaveToFile(fos); // this function write to file
+
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
