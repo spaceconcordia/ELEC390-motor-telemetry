@@ -136,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
 
         BluetoothSelect(); // Initial bluetooth connection
 
-
-
     }
 
     // This method is called when the Sensor activity is finished, if DisconnectStatus = True then disconnect
@@ -252,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // before updating the sensor data in the listView, clear the adapter, add the new data, and send a update notification
-    public void refill(String[] sensorData, ArrayAdapter adapter) {
+    public void refill(ArrayList sensorData, ArrayAdapter adapter) {
         adapter.clear();
         adapter.addAll(sensorData);
         adapter.notifyDataSetChanged();
@@ -464,13 +462,9 @@ public class MainActivity extends AppCompatActivity {
         // Display the sensors in a listview
         if (CurrentStatus != 'B') { // refresh display if the packet was bad!
 
-            // TODO: i should just save the sensors in an arrayList to begin with
-            String[] stringList = PresentData.getAllSensorsByString();
-            ArrayList<String> lst = new ArrayList<>(Arrays.asList(stringList));
-
             // only set the adapter if the adapter is null, otherwise update the sensor data
             if(sensorListView.getAdapter() == null) {
-                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lst);
+                adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, PresentData.getAllSensorsByString());
                 sensorListView.setAdapter(adapter);
             }
             else {

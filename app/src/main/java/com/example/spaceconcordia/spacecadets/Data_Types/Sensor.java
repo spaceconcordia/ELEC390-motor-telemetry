@@ -9,8 +9,6 @@ public class Sensor implements Serializable {
     private String name;
     private short value;
 
-    private BlockingQueue sensorDataQueue = new LinkedBlockingQueue(100);
-
     public Sensor(){}
 
     public String getName(){return name;}

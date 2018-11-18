@@ -1,9 +1,11 @@
 package com.example.spaceconcordia.spacecadets;
 
 import android.content.Intent;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +23,8 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     //protected GraphView graph;
     protected TextView dataTextView;
     protected GraphView graph;
+    protected MenuItem zoomInButton;
+    protected MenuItem zoomOutButton;
 
     private static boolean isInFront;
     private int position;
@@ -31,8 +35,10 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private packetanalysis PacketAnalysis;
     private BigData PresentData;
     private boolean BTconnected;
-    private int MaxValue = 100;
+    private int yMaxValue = 100;
+    private int xMaxValue = 500;
     private Viewport viewport;
+    private Menu graphMenu;
 
     // true if current activity is SingleSensorDislayActivity
     public static boolean isActivityInFront(){
@@ -48,6 +54,43 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
         this.setupUI();
 
+    }
+
+    //OnClickListeners for the Actionbar items
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.graph_menu, menu);
+
+        this.graphMenu = menu;
+        this.zoomInButton = graphMenu.findItem(R.id.zoomInButton);
+        this.zoomOutButton = graphMenu.findItem(R.id.zoomOutButton);
+
+        zoomInButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                    viewport = graph.getViewport();
+                    viewport.setMaxX(10000);
+                    xMaxValue = 100;
+
+                return false;
+            }
+        });
+
+        zoomOutButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                    viewport = graph.getViewport();
+                    viewport.setMaxX(600);
+                    xMaxValue = 600;
+
+                return false;
+            }
+        });
+
+        return true;
     }
 
     @Override
@@ -80,8 +123,8 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         viewport = graph.getViewport();
         viewport.setYAxisBoundsManual(true);
         viewport.setMinY(0);
-        viewport.setMaxY(MaxValue);
-        viewport.setMaxX(100);
+        viewport.setMaxY(yMaxValue);
+        viewport.setMaxX(xMaxValue);
         viewport.setScalable(true);
 
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
@@ -108,13 +151,13 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
             dataTextView.setText(String.format("Disconnected"));
         }else {
             dataTextView.setText(String.format("Current Value: %s", value));
-            if (point > MaxValue) {
-                MaxValue = point;
-                viewport.setMaxY(MaxValue);
+            if (point > yMaxValue) {
+                yMaxValue = point;
+                viewport.setMaxY(yMaxValue);
             }
         }
             //append a new data point to the graph every time the sensor's value get updated
-            series.appendData(new DataPoint(xValue++, point), true, 100);
+            series.appendData(new DataPoint(xValue++, point), true, xMaxValue);
 
             // update the Connection Status bar at the same time
             PacketAnalysis.GenerateStatusBarText(PresentData.GetEngineStatus(), BTstatusText); // This function update the status bar
