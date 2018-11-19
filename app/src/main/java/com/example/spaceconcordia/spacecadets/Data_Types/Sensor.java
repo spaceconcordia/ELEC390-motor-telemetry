@@ -8,10 +8,34 @@ public class Sensor implements Serializable {
 
     private String name;
     private short value;
+    private int type;
+    private BlockingQueue sensorDataQueue = new LinkedBlockingQueue(100);
+    int Transferedvalue;
 
-    public Sensor(){}
+    public Sensor(String name, int Type){
+        this.name = name;
+        this.type = type;
+    }
 
     public String getName(){return name;}
     public short getValue(){return value;}
 
+    public void UpdateValue(short value){
+        this.value = value;
+    }
+    public int GetTransferedValue(){
+        //Todo Get proper Transfer funciton
+        switch (type) {
+            case 0: // Temperature Sensor
+                Transferedvalue = value*1;
+            break;
+            case 1: // Pressure Sensor
+                Transferedvalue = value*1;
+            break;
+            case 2: // Flow Sensor
+                Transferedvalue =  value*1;
+            break;
+        }
+        return Transferedvalue;
+    }
 }

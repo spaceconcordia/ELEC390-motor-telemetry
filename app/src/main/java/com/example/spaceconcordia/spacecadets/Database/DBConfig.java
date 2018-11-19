@@ -1,5 +1,7 @@
 package com.example.spaceconcordia.spacecadets.Database;
 
+import java.util.ArrayList;
+
 public class DBConfig {
 
     public static final String DATABASE_NAME = "Telemetry-db";
@@ -38,4 +40,6 @@ public class DBConfig {
     public static final String sens27 = "press11";
     public static final String sens28 = "press12";
     public static final String sens29 = "press13";
+
+
 }
