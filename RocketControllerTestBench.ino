@@ -1,13 +1,16 @@
   /*
   ELEC390 - ROCKET ENGINE CONTROL BLUETOOTH
   */
-  
+  #include <SPI.h>
   #define ledPin PC13
+  
   int LEDSTATUS = 0;
   char incomingByte = 0;   // for incoming serial data
   short s = 0;
   String buffer = "";
   bool fired = false;
+  
+  int sensorPin = PB1;
   
   unsigned long previousPacketMillis = 0;
   unsigned long previousBlinkMillis = 0;
@@ -101,8 +104,19 @@
    previousPacketMillis = currentMillis;
 buffer = "";
 
-buffer += String(RocketStatus);
-    for (int i=0;i<29;i++){
+
+
+    buffer += String(RocketStatus);
+//Real sensor Value
+      buffer +="-";
+      s = analogRead(sensorPin);
+      if(s>100){
+      buffer += String(s,HEX);
+      }else{
+      buffer += "X";   
+        }
+    //Random fillers
+    for (int i=1;i<29;i++){
       buffer +="-";
       s = random (0,256);
       buffer += String(s,HEX);
