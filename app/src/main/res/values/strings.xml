@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Motor Telemetry</string>
     <string name="cancel_button_content">Cancel</string>
+    <string name="save_button_content">Save</string>
+    <string name="enter_buttton_content">Enter</string>
     <string name="current_sensor_value">Current Value: </string>
     <string name="title_activity_single_sensor_select">Single-Sensor Select</string>
     <string name="Title_Bluetooth_dialog">Select the Rocket Engine bluetooth adapter</string>
@@ -9,6 +11,10 @@
     <string name="Title_Bluetooth_Disconnect">Disconnect Bluetooth?</string>
     <string name="Button_Bluetooth_Disconnect">Disconnect</string>
     <string name="Save_Data_Prompt">Save sensor data to file?</string>
+    <string name="Enter_Password_Prompt">Enter Password: </string>
+    <string name="Incorrect_Password_Toast">Incorrect password</string>
+    <string name="Password_Length_Zero_Toast">Password must be non-zero length</string>
+    <string name="Launch_Command_Sent">Launch command sent</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -6,6 +6,7 @@ import com.example.spaceconcordia.spacecadets.Database.DBhelper;
 import com.example.spaceconcordia.spacecadets.SingleSensorDisplayActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class BigData implements Serializable {
@@ -14,7 +15,7 @@ public class BigData implements Serializable {
 
 
     private Sensor Sensor_List[];
-    private String All_Sensor_List[];
+    private ArrayList<String> All_Sensor_List;
 
     private char EngineStatus;
 
@@ -45,7 +46,7 @@ public class BigData implements Serializable {
     }
 
     /// getter of the sensor list objects
-    public String[] getAllSensorsByString(){return All_Sensor_List;}
+    public ArrayList<String> getAllSensorsByString(){return All_Sensor_List;}
 
     public String getSensorValueByListPosition(int position){
 
@@ -71,15 +72,15 @@ public class BigData implements Serializable {
                     EngineStatus = PacketParts[0].charAt(0);
                 }
 
-                All_Sensor_List = new String[PacketParts.length-1];
+                All_Sensor_List = new ArrayList<>();
 
                 for (int i = 0; i < SensList.getNbSensors(); i++) {
                     if(!PacketParts[i + 1].equals("X")) {
                         Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                        All_Sensor_List[i] = Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].getValue();
+                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].getValue());
                         ActiveSens[i] = true;
                     }else{
-                        All_Sensor_List[i] = Sensor_List[i].getName() + "\n" + "Disconnected";
+                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Disconnected");
                         Sensor_List[i].UpdateValue((short)-1);
                     }
                 }

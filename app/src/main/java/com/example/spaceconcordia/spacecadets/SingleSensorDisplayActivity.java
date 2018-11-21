@@ -23,8 +23,6 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     //protected GraphView graph;
     protected TextView dataTextView;
     protected GraphView graph;
-    protected MenuItem zoomInButton;
-    protected MenuItem zoomOutButton;
 
     private static boolean isInFront;
     private int position;

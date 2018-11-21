@@ -1,5 +1,6 @@
 package com.example.spaceconcordia.spacecadets;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -25,7 +26,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothDevice BTrocket;
     private BluetoothDialog BTdialog;
     private DisconnectDialog DiscDialog;
-    private Handler writeHandler;
+    public Handler writeHandler;
 
     //Bluetooth Thread
     private BTthread RocketThread; //Actual bluetooth thread
@@ -157,10 +157,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
-
-
-
     /// OnClickListeners for the Actionbar items
         @Override
         public boolean onCreateOptionsMenu (Menu menu){
@@ -177,11 +173,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     if(BTconnected) {
-                        // Action of launch button
-                        Message msg = Message.obtain();
-                        msg.obj = "S";
-                        writeHandler.sendMessage(msg);
+                        PasswordVerificationDialog passwordVerification = new PasswordVerificationDialog();
+                        passwordVerification.show(getSupportFragmentManager(), "password_verification");
                     }
+
                     return false;
                 }
 
@@ -210,13 +205,14 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             });
+
             SaveButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    Intent intent = new Intent(MainActivity.this, SaveData.class);
-                    startActivity(intent);
 
-                    savetofile(getCurrentFocus());
+                    SaveDataDialog saveData = new SaveDataDialog();
+                    saveData.show(getSupportFragmentManager(), "fragment_manager");
+
                     return false;
                 }
 
@@ -248,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // before updating the sensor data in the listView, clear the adapter, add the new data, and send a update notification
-    public void refill(ArrayList sensorData, ArrayAdapter adapter) {
+    public void refill(ArrayList<String> sensorData, ArrayAdapter adapter) {
         adapter.clear();
         adapter.addAll(sensorData);
         adapter.notifyDataSetChanged();
@@ -276,10 +272,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 if (myDir.exists()) { //Write on External Storage if the dir exist
                     fos = new FileOutputStream(file);
-                    Toast.makeText(this, "Data saved to " + file.getCanonicalPath() + "/" + FILE_NAME, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Data saved to " + file.getCanonicalPath() + "/" + FILE_NAME, Toast.LENGTH_LONG).show();
                 } else { //If not write on the internal storage
                     fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
-                    Toast.makeText(this, "Data saved to Internal Storage : " + FILE_NAME, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Data saved to Internal Storage : " + FILE_NAME, Toast.LENGTH_LONG).show();
                 }
 
                 DBmanager.SaveToFile(fos); // this function write to file
