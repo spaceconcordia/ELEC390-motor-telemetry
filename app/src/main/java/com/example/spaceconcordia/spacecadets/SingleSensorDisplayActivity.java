@@ -9,10 +9,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.spaceconcordia.spacecadets.Bluetooth.packetanalysis;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
+import com.example.spaceconcordia.spacecadets.Data_Types.Sensor;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -36,6 +39,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private int yMaxValue = 100;
     private Viewport viewport;
     private Menu graphMenu;
+    private Sensor sensor;
 
     // true if current activity is SingleSensorDislayActivity
     public static boolean isActivityInFront(){
@@ -88,6 +92,18 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         viewport.setMaxX(100);
         viewport.setScalable(true);
 
+        GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
+        sensor = PresentData.getSensorByListPosition(position);
+        if(sensor.getType() == 0){
+            gridLabel.setVerticalAxisTitle("Temperature " + sensor.getDimensions());
+        }
+        else if(sensor.getType() == 1){
+            gridLabel.setVerticalAxisTitle("Pressure " + sensor.getDimensions());
+        }
+        else{
+            gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
+        }
+
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
         this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
@@ -95,15 +111,18 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                     //Action of Emergency Stop Button
+                if(BTconnected) {
                     Intent intent = new Intent();
                     intent.putExtra("DisconnectStatus", true);
                     setResult(RESULT_OK, intent);
                     finish();
+                }
+                else{
+                    Toast.makeText(SingleSensorDisplayActivity.this, "Cannot send Stop Command - Not Connected", Toast.LENGTH_LONG).show();
+                }
 
             }
         });
-
-
     }
 
     public void updateDataPoint(float value, char EngineStatus){
@@ -111,7 +130,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         if (value == -1) {
             dataTextView.setText(String.format("Disconnected"));
         }else {
-            dataTextView.setText(String.format("Current Value: %s", point));
+            dataTextView.setText(String.format("Current Value %1s: %2s", sensor.getDimensions(), point));
             if (point > yMaxValue) {
                 yMaxValue = point;
                 viewport.setMaxY(yMaxValue);

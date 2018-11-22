@@ -15,6 +15,8 @@ public class Sensor implements Serializable {
         this.type = type;
     }
 
+    public int getType(){return type;}
+
     public String getName(){return name;}
 
     public short getRawValue(){return value;}
@@ -23,6 +25,17 @@ public class Sensor implements Serializable {
         this.value = value;
     }
 
+    public String getDimensions(){
+        if(type == 0){
+            return "(degC)";
+        }
+        else if(type == 1){
+            return "(PSI)";
+        }
+        else{
+            return "(L/sec)";
+        }
+    }
     public float GetTransferredValue(){
         //Todo Get proper Transfer function
         float Transferredvalue = 0;

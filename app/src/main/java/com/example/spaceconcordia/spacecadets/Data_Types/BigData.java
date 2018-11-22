@@ -9,17 +9,13 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class BigData implements Serializable {
+
     private Sensor_List SensList;
     private boolean ActiveSens[];
-
-
     private Sensor Sensor_List[];
     private ArrayList<String> All_Sensor_List;
-
     private char EngineStatus;
-
     private static final String TAG = "BigData";
-
     private static Context currentContext;
 
     public BigData() {
@@ -53,6 +49,13 @@ public class BigData implements Serializable {
         return -1; // return -1 if error
     }
 
+    public Sensor getSensorByListPosition(int position){
+        if(position < SensList.getNbSensors()){
+            return Sensor_List[position];
+        }
+        return null;
+    }
+
     /**
      * Sample packet : S-445‑A90‑21B2‑E15‑2281‑1147‑140E‑1550‑2023‑70B‑F45‑D71‑139A‑FA4‑14C7‑1F40‑E04‑15B7‑A84‑13E4‑15C7‑1FD0‑1A5F‑1FD2‑171‑2164‑2113‑5E1‑2233
      * The packet are in hexadecimals and values are separated by '-'
@@ -74,7 +77,11 @@ public class BigData implements Serializable {
                 for (int i = 0; i < SensList.getNbSensors(); i++) {
                     if(!PacketParts[i + 1].equals("X")) {
                         Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].GetTransferredValue());
+                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" +
+                                        "Current value " +
+                                        Sensor_List[i].getDimensions() +
+                                        ": " +
+                                        Sensor_List[i].GetTransferredValue());
                         ActiveSens[i] = true;
                     }else{
                         All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Disconnected");

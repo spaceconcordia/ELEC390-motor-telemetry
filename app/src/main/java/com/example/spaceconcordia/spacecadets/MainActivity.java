@@ -95,12 +95,16 @@ public class MainActivity extends AppCompatActivity {
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
+
                 if(BTconnected) {
                     //Action of Emergency Stop Button
                     Message msg = Message.obtain();
                     msg.obj = "X";
                     writeHandler.sendMessage(msg);
+                    Toast.makeText(MainActivity.this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Cannot send Stop Command - Not Connected", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, R.string.Engine_Not_Idle_Toast, Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(MainActivity.this, R.string.Bluetooth_Not_Connected_Toast, Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, R.string.Bluetooth_Not_Connected_Cannot_Launch_Toast, Toast.LENGTH_LONG).show();
                     }
                     return false;
                 }
