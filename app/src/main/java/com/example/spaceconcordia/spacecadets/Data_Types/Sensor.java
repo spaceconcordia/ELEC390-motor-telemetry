@@ -23,15 +23,15 @@ public class Sensor implements Serializable {
     public void UpdateValue(short value){
         this.value = value;
     }
-    public int GetTransferedValue(){
+    public float GetTransferedValue(){
         //Todo Get proper Transfer function
         Transferedvalue = 0;
         switch (type) {
-            case 0: // Temperature Sensor
-                Transferedvalue = value*100;
+            case 0: // Temperature Sensor in degC
+                Transferedvalue = (float)value/0.000040;   //Approx. 40uV/degC
             break;
-            case 1: // Pressure Sensor
-                Transferedvalue = value*1;
+            case 1: // Pressure Sensor in PSI
+                Transferedvalue = ((float)value*(0.00488) - 0.5) * 58.015; //0.5V offset, 4V range, so ~0.283 PSI/V in the end
             break;
             case 2: // Flow Sensor
                 Transferedvalue =  value*1;
