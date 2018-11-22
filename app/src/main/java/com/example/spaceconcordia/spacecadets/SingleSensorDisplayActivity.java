@@ -106,12 +106,12 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
     }
 
-    public void updateDataPoint(String value, char EngineStatus){
-        int point = Integer.parseInt(value);
-        if (value.equals("-1")) {
+    public void updateDataPoint(float value, char EngineStatus){
+        int point = (int) value;
+        if (value == -1) {
             dataTextView.setText(String.format("Disconnected"));
         }else {
-            dataTextView.setText(String.format("Current Value: %s", value));
+            dataTextView.setText(String.format("Current Value: %s", point));
             if (point > yMaxValue) {
                 yMaxValue = point;
                 viewport.setMaxY(yMaxValue);

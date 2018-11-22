@@ -9,8 +9,6 @@ public class Sensor implements Serializable {
     private String name;
     private short value;
     private int type;
-    private BlockingQueue sensorDataQueue = new LinkedBlockingQueue(100);
-    int Transferedvalue;
 
     public Sensor(String name, int type){
         this.name = name;
@@ -18,25 +16,27 @@ public class Sensor implements Serializable {
     }
 
     public String getName(){return name;}
+
     public short getRawValue(){return value;}
 
     public void UpdateValue(short value){
         this.value = value;
     }
-    public float GetTransferedValue(){
+
+    public float GetTransferredValue(){
         //Todo Get proper Transfer function
-        Transferedvalue = 0;
+        float Transferredvalue = 0;
         switch (type) {
             case 0: // Temperature Sensor in degC
-                Transferedvalue = (float)value/0.000040;   //Approx. 40uV/degC
+                Transferredvalue = (float) (value/0.000040);   //Approx. 40uV/degC
             break;
             case 1: // Pressure Sensor in PSI
-                Transferedvalue = ((float)value*(0.00488) - 0.5) * 58.015; //0.5V offset, 4V range, so ~0.283 PSI/V in the end
+                Transferredvalue = (float) ((value*0.00488 - 0.5) * 58.015); //0.5V offset, 4V range, so ~0.283 PSI/V in the end
             break;
             case 2: // Flow Sensor
-                Transferedvalue =  value*1;
+                Transferredvalue =  value*1;
             break;
         }
-        return Transferedvalue;
+        return Transferredvalue;
     }
 }

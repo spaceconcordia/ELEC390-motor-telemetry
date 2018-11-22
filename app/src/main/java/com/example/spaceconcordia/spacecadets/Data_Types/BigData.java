@@ -2,7 +2,6 @@ package com.example.spaceconcordia.spacecadets.Data_Types;
 
 import android.content.Context;
 
-import com.example.spaceconcordia.spacecadets.Database.DBhelper;
 import com.example.spaceconcordia.spacecadets.SingleSensorDisplayActivity;
 
 import java.io.Serializable;
@@ -21,8 +20,6 @@ public class BigData implements Serializable {
 
     private static final String TAG = "BigData";
 
-
-    Context context;
     private static Context currentContext;
 
     public BigData() {
@@ -48,12 +45,12 @@ public class BigData implements Serializable {
     /// getter of the sensor list objects
     public ArrayList<String> getAllSensorsByString(){return All_Sensor_List;}
 
-    public String getSensorValueByListPosition(int position){
+    public float getSensorValueByListPosition(int position){
 
         if(position < SensList.getNbSensors()){
-            return String.valueOf(Sensor_List[position].GetTransferedValue());
+            return Sensor_List[position].GetTransferredValue();
         }
-        return "Error";
+        return -1; // return -1 if error
     }
 
     /**
@@ -77,7 +74,7 @@ public class BigData implements Serializable {
                 for (int i = 0; i < SensList.getNbSensors(); i++) {
                     if(!PacketParts[i + 1].equals("X")) {
                         Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].GetTransferedValue());
+                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].GetTransferredValue());
                         ActiveSens[i] = true;
                     }else{
                         All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Disconnected");
@@ -105,12 +102,13 @@ public class BigData implements Serializable {
     public char GetEngineStatus(){return EngineStatus;}
 
 
-    public int GetTransferedSensorValue(int Index) {
-        if (Index < SensList.getNbSensors()) {
-            return Sensor_List[Index].GetTransferedValue();
-        }
-        return 0; // Return 0 for error
-    }
+//    public int GetTransferedSensorValue(int Index) {
+//        if (Index < SensList.getNbSensors()) {
+//            return Sensor_List[Index].GetTransferredValue();
+//        }
+//        return 0; // Return 0 for error
+//    }
+
     public short GetRawSensorValue(int Index) {
         if (Index < SensList.getNbSensors()) {
             return Sensor_List[Index].getRawValue();
