@@ -84,20 +84,20 @@ public class BigData implements Serializable {
                         Sensor_List[i].UpdateValue((short)-1);
                     }
                 }
-
-                // send the selected sensor's data to the graphing activity when it is created/resumed
-                if(SingleSensorDisplayActivity.isActivityInFront()){
-                    SingleSensorDisplayActivity currentActivity = (SingleSensorDisplayActivity) getContext();
-
-                    //pass the new data point associated with the selected sensor for the graphing activity
-                    currentActivity.updateDataPoint(getSensorValueByListPosition(currentActivity.getPosition()));
-                }
-
             } else if (PacketParts.length == 1) {
              EngineStatus = PacketParts[0].charAt(0);
              } else{
              EngineStatus = 'B';
          }
+
+        // send the selected sensor's data to the graphing activity when it is created/resumed
+        if(SingleSensorDisplayActivity.isActivityInFront()){
+            SingleSensorDisplayActivity currentActivity = (SingleSensorDisplayActivity) getContext();
+
+            //pass the new data point associated with the selected sensor for the graphing activity
+            currentActivity.updateDataPoint(getSensorValueByListPosition(currentActivity.getPosition()), EngineStatus);
+        }
+
         return EngineStatus; // Something Went wrong! Bad packet
     }
 

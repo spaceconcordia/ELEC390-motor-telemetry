@@ -106,7 +106,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
     }
 
-    public void updateDataPoint(String value){
+    public void updateDataPoint(String value, char EngineStatus){
         int point = Integer.parseInt(value);
         if (value.equals("-1")) {
             dataTextView.setText(String.format("Disconnected"));
@@ -121,7 +121,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
             series.appendData(new DataPoint(xValue++, point), true, 100);
 
             // update the Connection Status bar at the same time
-            PacketAnalysis.GenerateStatusBarText(PresentData.GetEngineStatus(), BTstatusText); // This function update the status bar
+            PacketAnalysis.GenerateStatusBarText(EngineStatus, BTstatusText); // This function update the status bar
 
     }
 
