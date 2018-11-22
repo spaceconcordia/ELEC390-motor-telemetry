@@ -1,9 +1,7 @@
 package com.example.spaceconcordia.spacecadets;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -22,6 +20,8 @@ public class PasswordVerificationDialog extends DialogFragment {
     protected Button cancelButton;
     protected EditText passwordEditText;
 
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -39,26 +39,16 @@ public class PasswordVerificationDialog extends DialogFragment {
                 if(passwordEditText.getText().toString().matches("")){
                     Toast.makeText(getActivity(), R.string.Password_Length_Zero_Toast, Toast.LENGTH_LONG).show();
                 }
-                else if(passwordEditText.getText().toString().equals(password)){
-
-                    // get writeHandler from MainActivity
-                    Activity activity = getActivity();
-                    if(activity instanceof MainActivity) {
-                        //Action of Launch command
-                        Message msg = Message.obtain();
-                        msg.obj = "S";
-                        MainActivity myActivity = (MainActivity) getActivity();
-                        myActivity.writeHandler = new Handler();
-                        myActivity.writeHandler.sendMessage(msg);
-
-                        Toast.makeText(getActivity(), R.string.Launch_Command_Sent, Toast.LENGTH_LONG).show();
+                else if(passwordEditText.getText().toString().equals(password)) {
+                    if(getActivity() != null){
+                        ((MainActivity) getActivity()).sendLaunchCommand();
+                        getDialog().dismiss();
                     }
-
-                    getDialog().dismiss();
                 }
                 else{
                     Toast.makeText(getActivity(), R.string.Incorrect_Password_Toast, Toast.LENGTH_LONG).show();
                 }
+
             }
         });
 
@@ -72,7 +62,5 @@ public class PasswordVerificationDialog extends DialogFragment {
         return view;
     }
 
-
-
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data){}
 }

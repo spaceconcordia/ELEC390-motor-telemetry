@@ -1,6 +1,5 @@
 package com.example.spaceconcordia.spacecadets;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -133,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     // This method is called when the Sensor activity is finished, if DisconnectStatus = True then disconnect
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
                         PasswordVerificationDialog passwordVerification = new PasswordVerificationDialog();
                         passwordVerification.show(getSupportFragmentManager(), "password_verification");
                     }
-
                     return false;
                 }
 
@@ -243,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+
     // before updating the sensor data in the listView, clear the adapter, add the new data, and send a update notification
     public void refill(ArrayList<String> sensorData, ArrayAdapter adapter) {
         adapter.clear();
@@ -294,6 +294,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+    }
+
+    public void sendLaunchCommand(){
+        Message msg = Message.obtain();
+        msg.obj = "S";
+        writeHandler.sendMessage(msg);
+        Toast.makeText(MainActivity.this, R.string.Launch_Command_Sent, Toast.LENGTH_LONG).show();
     }
 
         /***
