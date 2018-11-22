@@ -260,10 +260,6 @@ public class MainActivity extends AppCompatActivity {
 
             FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".csv";
 
-            /*TODO get contents of DATABASE
-             * TODO Convert into string
-             */
-
             String root = Environment.getExternalStorageDirectory().toString();
             File myDir = new File(root+"/Rocket_Telemetry_LOG/");
             if (!myDir.exists()) {

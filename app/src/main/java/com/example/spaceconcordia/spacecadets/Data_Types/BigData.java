@@ -51,7 +51,7 @@ public class BigData implements Serializable {
     public String getSensorValueByListPosition(int position){
 
         if(position < SensList.getNbSensors()){
-            return String.valueOf(Sensor_List[position].getValue());
+            return String.valueOf(Sensor_List[position].GetTransferedValue());
         }
         return "Error";
     }
@@ -77,7 +77,7 @@ public class BigData implements Serializable {
                 for (int i = 0; i < SensList.getNbSensors(); i++) {
                     if(!PacketParts[i + 1].equals("X")) {
                         Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
-                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].getValue());
+                        All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Current value: " + Sensor_List[i].GetTransferedValue());
                         ActiveSens[i] = true;
                     }else{
                         All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" + "Disconnected");
@@ -105,9 +105,15 @@ public class BigData implements Serializable {
     public char GetEngineStatus(){return EngineStatus;}
 
 
-    public short GetSensorValue(int Index) {
+    public int GetTransferedSensorValue(int Index) {
         if (Index < SensList.getNbSensors()) {
-            return Sensor_List[Index].getValue();
+            return Sensor_List[Index].GetTransferedValue();
+        }
+        return 0; // Return 0 for error
+    }
+    public short GetRawSensorValue(int Index) {
+        if (Index < SensList.getNbSensors()) {
+            return Sensor_List[Index].getRawValue();
         }
         return 0; // Return 0 for error
     }
