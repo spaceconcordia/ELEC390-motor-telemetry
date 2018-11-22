@@ -10,11 +10,13 @@
     <string name="Toast_Emulator">Emulator cannot handle Bluetooth</string>
     <string name="Title_Bluetooth_Disconnect">Disconnect Bluetooth?</string>
     <string name="Button_Bluetooth_Disconnect">Disconnect</string>
+    <string name="Bluetooth_Not_Connected_Toast">Cannot send launch command from simulated thread. Connect to bluetooth first.</string>
     <string name="Save_Data_Prompt">Save sensor data to file?</string>
     <string name="Enter_Password_Prompt">Enter Password: </string>
     <string name="Incorrect_Password_Toast">Incorrect password</string>
     <string name="Password_Length_Zero_Toast">Password must be non-zero length</string>
     <string name="Launch_Command_Sent">Launch command sent</string>
+    <string name="Engine_Not_Idle_Toast">Engine cannot be launched from non-idle state</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
