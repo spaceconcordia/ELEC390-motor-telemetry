@@ -172,9 +172,15 @@ public class MainActivity extends AppCompatActivity {
             launchButton.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    if(BTconnected) {
+                    if(BTconnected && PresentData.GetEngineStatus() == 'I') {
                         PasswordVerificationDialog passwordVerification = new PasswordVerificationDialog();
                         passwordVerification.show(getSupportFragmentManager(), "password_verification");
+                    }
+                    else if(BTconnected){
+                        Toast.makeText(MainActivity.this, R.string.Engine_Not_Idle_Toast, Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, R.string.Bluetooth_Not_Connected_Toast, Toast.LENGTH_LONG).show();
                     }
                     return false;
                 }
