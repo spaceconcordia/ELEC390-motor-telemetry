@@ -97,16 +97,20 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
         GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
         sensor = PresentData.getSensorByListPosition(position);
-        if(sensor.getType() == 0){
-            gridLabel.setVerticalAxisTitle("Temperature " + sensor.getDimensions());
-        }
-        else if(sensor.getType() == 1){
-            gridLabel.setVerticalAxisTitle("Pressure " + sensor.getDimensions());
-        }
-        else{
-            gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
-        }
-
+        switch(sensor.getType()) {
+            case 0:
+                gridLabel.setVerticalAxisTitle("Temperature " + sensor.getDimensions());
+                break;
+            case 1:
+                gridLabel.setVerticalAxisTitle("Pressure " + sensor.getDimensions());
+                break;
+            case 2:
+                gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
+                break;
+            case 3:
+                gridLabel.setVerticalAxisTitle("Poentiometer" + sensor.getDimensions());
+                break;
+                }
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
         this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {

@@ -26,15 +26,22 @@ public class Sensor implements Serializable {
     }
 
     public String getDimensions(){
-        if(type == 0){
-            return "(degC)";
+        String Dimensions = "";
+        switch(type) {
+            case 0:
+                Dimensions = "(degC)";
+                break;
+            case 1:
+                Dimensions = "(PSI)";
+                break;
+            case 2:
+                Dimensions = "(L/sec)";
+                break;
+            case 3:
+                Dimensions = "(%)";
+                break;
         }
-        else if(type == 1){
-            return "(PSI)";
-        }
-        else{
-            return "(L/sec)";
-        }
+        return Dimensions;
     }
     public float GetTransferredValue(){
         //Todo Get proper Transfer function
@@ -46,9 +53,12 @@ public class Sensor implements Serializable {
             case 1: // Pressure Sensor in PSI
                 Transferredvalue = (float) ((value*0.00488 - 0.5) * 58.015); //0.5V offset, 4V range, so ~0.283 PSI/V in the end
             break;
-            case 2: // Flow Sensor
-                Transferredvalue =  value*1;
+            case 2: // Flow Sensor -  Used as temporary pot sensor
+                Transferredvalue =value*1;
             break;
+            case 3: // Demonstration Test pot sensor
+                Transferredvalue = (float) (value*0.071428-185.714);
+                break;
         }
         return Transferredvalue;
     }
