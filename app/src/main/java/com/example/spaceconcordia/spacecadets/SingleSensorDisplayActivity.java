@@ -74,6 +74,9 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         setTitle(intent.getExtras().getString("sensorName"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         position = intent.getExtras().getInt("sensorPosition");
         PresentData = (BigData) intent.getSerializableExtra("serialized_data");
         PacketAnalysis = (packetanalysis) intent.getSerializableExtra("PacketAnalysis");
@@ -118,11 +121,23 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
                     finish();
                 }
                 else{
-                    Toast.makeText(SingleSensorDisplayActivity.this, "Cannot send Stop Command - Not Connected", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SingleSensorDisplayActivity.this, R.string.CANNOT_SEND_STOP, Toast.LENGTH_LONG).show();
                 }
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void updateDataPoint(float value, char EngineStatus){
