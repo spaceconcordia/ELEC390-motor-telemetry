@@ -6,7 +6,7 @@
   
   int LEDSTATUS = 0;
   char incomingByte = 0;   // for incoming serial data
-  short s = 0;
+  short SensorRawValue[29];
   String buffer = "";
   bool fired = false;
   
@@ -99,27 +99,34 @@
       LEDSTATUS = !LEDSTATUS;
       }
     }              
-              
+
+
+             // THIS FUNCTION IS WHERE ALL THE DATA IS GET AND THE PACKET IS CREATED AND HAPPEN
    if (currentMillis - previousPacketMillis >= Packetinterval) {
    previousPacketMillis = currentMillis;
-buffer = "";
+   
 
+    for (int i=0;i<29;i++){ // All Sensors value to disconnected (-1) by default
+      SensorRawValue[i] = -1;
+      }
 
+//Real sensor Values added to the SensorRawValue[] array here
+      SensorRawValue[14] = analogRead(sensorPin);
+      if(SensorRawValue[14]<100){ // If its under 100, set it back to disconnected
+      SensorRawValue[14] = -1;
+      }
+        
+      buffer = ""; // Packet buffer set to empty
+      buffer += String(RocketStatus); // First Char is rocket Status
 
-    buffer += String(RocketStatus);
-//Real sensor Value
+    //All Sensor Values are then sent
+    for (int i=0;i<29;i++){
       buffer +="-";
-      s = analogRead(sensorPin);
-      if(s>100){
-      buffer += String(s,HEX);
-      }else{
-      buffer += "X";   
+      if (SensorRawValue[i] == -1){
+              buffer += String('X');
+        } else {
+      buffer += String(SensorRawValue[i],HEX);
         }
-    //Random fillers
-    for (int i=1;i<29;i++){
-      buffer +="-";
-      s = random (0,256);
-      buffer += String(s,HEX);
       }
 buffer += "\n";
 
