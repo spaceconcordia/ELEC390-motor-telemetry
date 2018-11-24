@@ -11,10 +11,10 @@
     <string name="Title_Bluetooth_Disconnect">Disconnect Bluetooth?</string>
     <string name="Button_Bluetooth_Disconnect">Disconnect</string>
     <string name="Bluetooth_Not_Connected_Cannot_Launch_Toast">Cannot send launch command - Disconnected</string>
-    <string name="Save_Data_Prompt">Save All raw data to .csv?</string>
-    <string name="Save_Data_Warning">WARNING : CAN TAKE UP TO ONE MINUTE</string>
+    <string name="Save_Data_Prompt">Save All Raw Data to .CSV?</string>
+    <string name="Save_Data_Warning">WARNING : MAY TAKE UP TO ONE MINUTE</string>
     <string name="Enter_Password_Prompt">Enter Password: </string>
-    <string name="Incorrect_Password_Toast">Incorrect password</string>
+    <string name="Incorrect_Password_Toast">Incorrect Password</string>
     <string name="Password_Length_Zero_Toast">Password must be non-zero length</string>
     <string name="Launch_Command_Sent">Launch command sent</string>
     <string name="Engine_Not_Idle_Toast">Engine cannot be launched from non-idle state</string>
