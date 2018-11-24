@@ -57,7 +57,6 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -103,6 +102,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         else{
             gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
         }
+
 
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
         this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);

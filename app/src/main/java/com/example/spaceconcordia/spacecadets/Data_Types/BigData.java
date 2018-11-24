@@ -105,7 +105,6 @@ public class BigData implements Serializable {
         return EngineStatus; // Something Went wrong! Bad packet
     }
 
-
     public char GetEngineStatus(){return EngineStatus;}
 
 
