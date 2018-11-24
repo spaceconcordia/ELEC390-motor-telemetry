@@ -44,7 +44,9 @@ public class BigData implements Serializable {
     public float getSensorValueByListPosition(int position){
 
         if(position < SensList.getNbSensors()){
-            return Sensor_List[position].GetTransferredValue();
+            if (Sensor_List[position].getRawValue()!= -1) {
+                return Sensor_List[position].GetTransferredValue();
+            }
         }
         return -1; // return -1 if error
     }

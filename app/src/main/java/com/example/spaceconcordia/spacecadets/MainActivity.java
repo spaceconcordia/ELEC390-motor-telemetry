@@ -101,10 +101,10 @@ public class MainActivity extends AppCompatActivity {
                     Message msg = Message.obtain();
                     msg.obj = "X";
                     writeHandler.sendMessage(msg);
-                    Toast.makeText(MainActivity.this, "EMERGENCY STOP SENT", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.STOP_SENT, Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(MainActivity.this, "Cannot send Stop Command - Not Connected", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.CANNOT_SEND_STOP, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void savetofile(View v) {
 
-            FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".csv";
+        FILE_NAME = String.valueOf(Calendar.getInstance().getTime()) + ".csv";
 
             String root = Environment.getExternalStorageDirectory().toString();
             File myDir = new File(root+"/Rocket_Telemetry_LOG/");

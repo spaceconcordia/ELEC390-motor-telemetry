@@ -130,4 +130,6 @@ public class packetanalysis implements Serializable {
             }
         BTstatusText.setText(StatusBarText);
     }
+
+    public int getPacketFrequency(){return PacketFrequency;};
 }
