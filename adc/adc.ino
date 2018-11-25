@@ -19,9 +19,13 @@ void setup() {
   //Set up ADS1120
   SPI.transfer(0b00000110);     //reset
   delay(WAIT);                  
-  SPI.transfer(0b01000010);     //specify to write regs 0,1,2
+  SPI.transfer(0b01000000);     //specify to write to reg 0
   SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
+  delay(WAIT);
+  SPI.transfer(0b01000100);     //specify to write to reg 1
   SPI.transfer(0b00000100);     //Data rate = 20sps, Normal mode, single conversion, temp disabled, current sources disabled
+  delay(WAIT);
+  SPI.transfer(0b01001000);     //specify to write to reg 2
   SPI.transfer(0b00000000);     //Internal ref V, no filter, no pwr switch, current sources off
   delay(200);
 
@@ -40,9 +44,10 @@ void setup() {
 
 void loop() {
   SPI.transfer(0b00001000);
+  delay(20);
   rawValue = readADC();
   Serial.println(rawValue, BIN);
-  delay(500);
+  delay(480);
 }
 
 long readADC(){
