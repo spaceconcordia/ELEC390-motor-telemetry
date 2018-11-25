@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.spaceconcordia.spacecadets.Bluetooth.packetanalysis;
 import com.example.spaceconcordia.spacecadets.Data_Types.BigData;
 import com.example.spaceconcordia.spacecadets.Data_Types.Sensor;
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.Viewport;
@@ -107,6 +108,8 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         }
 
 
+
+
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
         this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
@@ -153,9 +156,21 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         }
             //append a new data point to the graph every time the sensor's value get updated
             series.appendData(new DataPoint(xValue++, point), true, 100);
-
             // update the Connection Status bar at the same time
             PacketAnalysis.GenerateStatusBarText(EngineStatus, BTstatusText); // This function update the status bar
+
+
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+
+                if (isValueX) {
+                    return super.formatLabel(value / 10, isValueX);
+                }
+                return null;
+            }
+
+        });
 
     }
 
