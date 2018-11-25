@@ -37,6 +37,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private BigData PresentData;
     private boolean BTconnected;
     private int yMaxValue = 100;
+    private int yMinValue = 100;
     private Viewport viewport;
     private Menu graphMenu;
     private Sensor sensor;
@@ -90,7 +91,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         graph.addSeries(series);
         viewport = graph.getViewport();
         viewport.setYAxisBoundsManual(true);
-        viewport.setMinY(0);
+        viewport.setMinY(yMinValue);
         viewport.setMaxY(yMaxValue);
         viewport.setMaxX(100);
         viewport.setScalable(true);
@@ -153,6 +154,10 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
             if (point > yMaxValue) {
                 yMaxValue = point;
                 viewport.setMaxY(yMaxValue);
+            }
+            if (point < yMinValue) {
+                yMinValue = point;
+                viewport.setMinY(yMinValue);
             }
         }
             //append a new data point to the graph every time the sensor's value get updated
