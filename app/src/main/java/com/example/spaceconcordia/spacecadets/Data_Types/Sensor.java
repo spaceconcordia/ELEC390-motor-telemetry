@@ -56,8 +56,8 @@ public class Sensor implements Serializable {
             case 2: // Flow Sensor -  Used as temporary pot sensor
                 Transferredvalue =value*1;
             break;
-            case 3: // Demonstration Test pot sensor
-                Transferredvalue = (float) (value*0.071428-185.714);
+            case 3: // Demonstration Test pot sensor (goes from 0% to 100%)
+                Transferredvalue = (float) (value*0.067567-176.6892);
                 break;
         }
         return Transferredvalue;
