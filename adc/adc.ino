@@ -23,12 +23,13 @@ void setup() {
   SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
   delay(WAIT);
   SPI.transfer(0b01000100);     //specify to write to reg 1
-  SPI.transfer(0b00000100);     //Data rate = 20sps, Normal mode, single conversion, temp disabled, current sources disabled
+  SPI.transfer(0b00000100);     //Data rate = 90sps, Normal mode, single conversion, temp disabled, current sources disabled
   delay(WAIT);
   SPI.transfer(0b01001000);     //specify to write to reg 2
   SPI.transfer(0b00000000);     //Internal ref V, no filter, no pwr switch, current sources off
   delay(200);
 
+  /*
   //Read back registers
   Serial.println("ADC Register Contents:");
   SPI.transfer(0b00100000);
@@ -38,6 +39,7 @@ void setup() {
   SPI.transfer(0b00101000);
   Serial.println(SPI.transfer(0),BIN);  //Read reg2
   delay(200);
+  */
 
   Serial.println("ADC Start");
 }
@@ -45,7 +47,7 @@ void setup() {
 void loop() {
   //Start
   SPI.transfer(0b00001000);
-  delay(20);
+  delay(12);
 
   //Get TC1
   rawValue = readADC();
@@ -58,7 +60,7 @@ void loop() {
 
   //Start
   SPI.transfer(0b00001000);
-  delay(20);
+  delay(12);
   
   //Get TC2
   rawValue = readADC();
@@ -75,8 +77,9 @@ void loop() {
 
 short readADC(){
   short result = 0;
-  SPI.transfer(0b0001000);
-  result = SPI.transfer16(0);
+  result = SPI.transfer(0b0001000);
+  result = result << 8;
+  result += SPI.transfer(0);
   return result;
 }
 
