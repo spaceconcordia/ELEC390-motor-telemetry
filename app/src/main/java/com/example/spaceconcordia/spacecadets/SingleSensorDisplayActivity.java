@@ -37,7 +37,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private BigData PresentData;
     private boolean BTconnected;
     private int yMaxValue = 100;
-    private int yMinValue = 100;
+    private int yMinValue = 0;
     private Viewport viewport;
     private Menu graphMenu;
     private Sensor sensor;
