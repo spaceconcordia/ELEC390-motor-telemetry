@@ -4,7 +4,7 @@
 #define RDY 9
 #define WAIT 1
 
-long rawValue = 0;
+short rawValue = 0;
 
 void setup() {
   //Initialise UART
@@ -43,15 +43,38 @@ void setup() {
 }
 
 void loop() {
+  //Start
   SPI.transfer(0b00001000);
   delay(20);
+
+  //Get TC1
   rawValue = readADC();
+  Serial.print(rawValue, BIN);
+
+  //Change to TC2 Port
+  SPI.transfer(0b01000000);     //specify to write to reg 0
+  SPI.transfer(0b01010001);     //Vdiff between A2 and A3, Gain of 1, pga disabled
+  delay(WAIT);
+
+  //Start
+  SPI.transfer(0b00001000);
+  delay(20);
+  
+  //Get TC2
+  rawValue = readADC();
+  Serial.print("   ");
   Serial.println(rawValue, BIN);
-  delay(480);
+
+  //Change to TC1 Port
+  SPI.transfer(0b01000000);     //specify to write to reg 0
+  SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
+  delay(WAIT);
+  
+  delay(500);
 }
 
-long readADC(){
-  long result = 0;
+short readADC(){
+  short result = 0;
   SPI.transfer(0b0001000);
   result = SPI.transfer16(0);
   return result;
