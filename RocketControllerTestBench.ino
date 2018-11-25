@@ -10,8 +10,10 @@
   String buffer = "";
   bool fired = false;
   
-  int sensorPin = PB1;
-  
+  int POTPin = PB0;
+  int HeaderPin = PA0;
+  int STOPLEDPin = PB10;
+
   unsigned long previousPacketMillis = 0;
   unsigned long previousBlinkMillis = 0;
   unsigned long currentMillis;
@@ -29,7 +31,9 @@
   // the setup function runs once when you press reset or power the board
   void setup() {
     pinMode(ledPin, OUTPUT);
+    pinMode(STOPLEDPin, OUTPUT);
     digitalWrite(ledPin, HIGH);   
+    digitalWrite(STOPLEDPin, LOW);   
     Serial1.begin(9600);
     RocketStatus = 'I';
   }
@@ -49,6 +53,7 @@
                       digitalWrite(ledPin, LOW);
                       fired = true;  
                     } else if (incomingByte=='X'){ // Emergency Stop from android
+                              digitalWrite(STOPLEDPin, HIGH);   
                   RocketStatus = 'X'; // STOP
               digitalWrite(ledPin, HIGH);
               fired =true;   
@@ -63,6 +68,7 @@
         if (fired){ // If fired, abort
     RocketStatus = 'x';
     blinktime = StopBlinktime;
+        digitalWrite(STOPLEDPin, HIGH);   
     }
     if (!fired){ // if not already emergency stopped
     RocketStatus = 'D'; // Set disconnect
@@ -111,9 +117,15 @@
       }
 
 //Real sensor Values added to the SensorRawValue[] array here
-      SensorRawValue[14] = analogRead(sensorPin);
+      //POT READINGS
+      SensorRawValue[14] = analogRead(POTPin);
       if(SensorRawValue[14]<100){ // If its under 100, set it back to disconnected
       SensorRawValue[14] = -1;
+      }
+      //PRESSURE HEADER
+      SensorRawValue[16] = analogRead(HeaderPin);
+    if(SensorRawValue[16]<50){ 
+      SensorRawValue[16] = -1;
       }
         
       buffer = ""; // Packet buffer set to empty
