@@ -3,15 +3,21 @@
   */
   #include <SPI.h>
   #define ledPin PC13
-  
+  #define CS  10 
+  #define RDY 9
+  #define WAIT 1
   int LEDSTATUS = 0;
   char incomingByte = 0;   // for incoming serial data
   short SensorRawValue[29];
   String buffer = "";
   bool fired = false;
+
+short rawValue = 0;
+
   
   int POTPin = PB0;
   int HeaderPin = PA0;
+  int ThermoPin = PA3;
   int STOPLEDPin = PB10;
 
   unsigned long previousPacketMillis = 0;
@@ -27,9 +33,30 @@
   int blinktime = UnconnectedBlinkTime;
   
   char RocketStatus; // F = fired, X= Emergency stop, I = Iddle, D = Disconnected, x= stopped because disconnect while firing
-  
-  // the setup function runs once when you press reset or power the board
-  void setup() {
+
+// SPI CODE
+void setup() {
+  //Initialise UART
+
+  //Initialize SPI
+  SPI.begin();
+  pinMode(RDY,INPUT);
+  SPI.beginTransaction(SPISettings(12000000,MSBFIRST,SPI_MODE1)); //12MHz, MSB shifted out first, SPI Mode 1
+  delay(5);
+
+  //Set up ADS1120
+  SPI.transfer(0b00000110);     //reset
+  delay(WAIT);                  
+  SPI.transfer(0b01000000);     //specify to write to reg 0
+  SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
+  delay(WAIT);
+  SPI.transfer(0b01000100);     //specify to write to reg 1
+  SPI.transfer(0b00000100);     //Data rate = 90sps, Normal mode, single conversion, temp disabled, current sources disabled
+  delay(WAIT);
+  SPI.transfer(0b01001000);     //specify to write to reg 2
+  SPI.transfer(0b00000000);     //Internal ref V, no filter, no pwr switch, current sources off
+  delay(200);
+
     pinMode(ledPin, OUTPUT);
     pinMode(STOPLEDPin, OUTPUT);
     digitalWrite(ledPin, HIGH);   
@@ -123,10 +150,41 @@
       SensorRawValue[14] = -1;
       }
       //PRESSURE HEADER
+      SensorRawValue[15] = analogRead(ThermoPin);
+      SensorRawValue[0] = analogRead(ThermoPin);
+
       SensorRawValue[16] = analogRead(HeaderPin);
-    if(SensorRawValue[16]<50){ 
+    if(SensorRawValue[16]<200){ 
       SensorRawValue[16] = -1;
       }
+
+//SPI DAVID CODE
+  SPI.transfer(0b00001000);
+  delay(12);
+
+  //Get TC1
+  rawValue = readADC();
+  SensorRawValue[1] = rawValue;
+  SensorRawValue[15] =   rawValue;
+
+
+  //Change to TC2 Port
+  SPI.transfer(0b01000000);     //specify to write to reg 0
+  SPI.transfer(0b01010001);     //Vdiff between A2 and A3, Gain of 1, pga disabled
+  delay(WAIT);
+
+  //Start
+  SPI.transfer(0b00001000);
+  delay(12);
+  
+  //Get TC2
+  SensorRawValue[2] = readADC();
+
+  //Change to TC1 Port
+  SPI.transfer(0b01000000);     //specify to write to reg 0
+  SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
+  delay(WAIT);
+//End of SPI DAVID CODE
         
       buffer = ""; // Packet buffer set to empty
       buffer += String(RocketStatus); // First Char is rocket Status
@@ -143,6 +201,13 @@
 buffer += "\n";
 
 Serial1.print(buffer);
-         }
-      
+         }  
    }
+
+short readADC(){
+  short result = 0;
+  result = SPI.transfer(0b0001000);
+  result = result << 8;
+  result += SPI.transfer(0);
+  return result;
+}
