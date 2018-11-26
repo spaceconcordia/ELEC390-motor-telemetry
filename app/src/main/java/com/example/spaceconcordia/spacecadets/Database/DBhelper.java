@@ -156,7 +156,7 @@ public class DBhelper extends SQLiteOpenHelper {
     public void SaveToFile(FileOutputStream fos) {
 
 
-        String Header = String.valueOf(System.currentTimeMillis()) +" : " + Calendar.getInstance().getTime() + "\n\r"+
+        String Header = Calendar.getInstance().getTime() + ";" + String.valueOf(System.currentTimeMillis()) +  "\n\r"+
                 "ID" + DELIMITER + DBConfig.Time_ms + DELIMITER + DBConfig.Status + DELIMITER +
                 DBConfig.sens1 + DELIMITER + DBConfig.sens2 + DELIMITER + DBConfig.sens3 + DELIMITER + DBConfig.sens4 + DELIMITER + DBConfig.sens5 + DELIMITER +
                 DBConfig.sens6 + DELIMITER + DBConfig.sens7 + DELIMITER + DBConfig.sens8 + DELIMITER + DBConfig.sens9 + DELIMITER + DBConfig.sens10 + DELIMITER +

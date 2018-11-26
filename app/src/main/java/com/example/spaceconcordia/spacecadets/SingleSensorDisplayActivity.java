@@ -38,6 +38,7 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
     private BigData PresentData;
     private boolean BTconnected;
     private int yMaxValue = 100;
+    private int yMinValue = 0;
     private Viewport viewport;
     private Menu graphMenu;
     private Sensor sensor;
@@ -90,26 +91,27 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
         graph.addSeries(series);
         viewport = graph.getViewport();
         viewport.setYAxisBoundsManual(true);
-        viewport.setMinY(0);
+        viewport.setMinY(yMinValue);
         viewport.setMaxY(yMaxValue);
         viewport.setMaxX(100);
         viewport.setScalable(true);
 
         GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
         sensor = PresentData.getSensorByListPosition(position);
-        if(sensor.getType() == 0){
-            gridLabel.setVerticalAxisTitle("Temperature " + sensor.getDimensions());
-        }
-        else if(sensor.getType() == 1){
-            gridLabel.setVerticalAxisTitle("Pressure " + sensor.getDimensions());
-        }
-        else{
-            gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
-        }
-
-
-
-
+        switch(sensor.getType()) {
+            case 0:
+                gridLabel.setVerticalAxisTitle("Temperature " + sensor.getDimensions());
+                break;
+            case 1:
+                gridLabel.setVerticalAxisTitle("Pressure " + sensor.getDimensions());
+                break;
+            case 2:
+                gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
+                break;
+            case 3:
+                gridLabel.setVerticalAxisTitle("Poentiometer" + sensor.getDimensions());
+                break;
+                }
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
         this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
@@ -153,9 +155,14 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
                 yMaxValue = point;
                 viewport.setMaxY(yMaxValue);
             }
+            if (point < yMinValue) {
+                yMinValue = point;
+                viewport.setMinY(yMinValue);
+            }
         }
             //append a new data point to the graph every time the sensor's value get updated
             series.appendData(new DataPoint(xValue++, point), true, 100);
+
             // update the Connection Status bar at the same time
             PacketAnalysis.GenerateStatusBarText(EngineStatus, BTstatusText); // This function update the status bar
 

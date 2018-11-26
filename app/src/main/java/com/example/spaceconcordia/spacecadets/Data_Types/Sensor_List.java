@@ -27,8 +27,8 @@ public class Sensor_List implements Serializable {
         SensorName.add("Temperature 12");
         SensorName.add("Temperature 13");
         SensorName.add("Temperature 14");
+        SensorName.add("Potentiometer 1");
         SensorName.add("Flow 1");
-        SensorName.add("Flow 2");
         SensorName.add("Pressure 1");
         SensorName.add("Pressure 2");
         SensorName.add("Pressure 3");
@@ -62,7 +62,7 @@ public class Sensor_List implements Serializable {
         SensorType.add(0);
         SensorType.add(0);
         SensorType.add(0);
-        SensorType.add(2);
+        SensorType.add(3);
         SensorType.add(2);
         SensorType.add(1);
         SensorType.add(1);

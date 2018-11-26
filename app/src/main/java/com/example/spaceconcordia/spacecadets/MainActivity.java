@@ -483,8 +483,10 @@ public class MainActivity extends AppCompatActivity {
             KillThreads();
         }
 
-        DBmanager.insertValues(PresentData);
-
+        //Save to Database Only if connected to the Rocket Engine, Offline Test Thread data is not usefull to log
+        if (BTconnected) {
+            DBmanager.insertValues(PresentData);
+        }
     }
 
 }
