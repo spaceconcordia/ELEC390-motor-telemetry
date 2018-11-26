@@ -48,7 +48,7 @@ public class Sensor_List implements Serializable {
         * 1 : Pressure
         * 2 : Flow
         * */
-        SensorType.add(0);
+        SensorType.add(4);
         SensorType.add(0);
         SensorType.add(0);
         SensorType.add(0);

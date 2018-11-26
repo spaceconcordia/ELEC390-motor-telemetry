@@ -23,6 +23,8 @@ import com.example.spaceconcordia.spacecadets.R;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static android.bluetooth.BluetoothDevice.BOND_NONE;
+
 public class BluetoothDialog extends DialogFragment{
     private static final String TAG = "InsertAssignmentDialog";
 
@@ -55,6 +57,7 @@ public class BluetoothDialog extends DialogFragment{
 
                 // There are paired devices. Get the name and address of each paired device.
                 for (BluetoothDevice device : pairedDevices) {
+
                    Name.add(device.getName());
                    Address.add(device.getAddress());
                 }

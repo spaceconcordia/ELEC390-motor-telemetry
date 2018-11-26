@@ -317,12 +317,12 @@ public class MainActivity extends AppCompatActivity {
          *
         ***/
 
-        public void setBTrocket(BluetoothDevice device){
+    public void setBTrocket(BluetoothDevice device){
             BTrocket = device;
             BTdialog.dismiss();
             ConnectThread BTthread = new ConnectThread(BTrocket);
             BTthread.run();
-        }
+    }
 
         //This kills both Bluetooth and offline simulation thread;
     public void KillThreads(){

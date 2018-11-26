@@ -40,6 +40,9 @@ public class Sensor implements Serializable {
             case 3:
                 Dimensions = "(%)";
                 break;
+            case 4:
+                Dimensions = "(degC)";
+                break;
         }
         return Dimensions;
     }
@@ -47,17 +50,20 @@ public class Sensor implements Serializable {
         //Todo Get proper Transfer function
         float Transferredvalue = 0;
         switch (type) {
-            case 0: // Temperature Sensor in degC
+            case 0: // Temperature Sensor in degC for ADC Board
                 Transferredvalue = (float) (value/0.000040);   //Approx. 40uV/degC
             break;
             case 1: // Pressure Sensor in PSI
-                Transferredvalue = (float) ((value*0.00488 - 0.5) * 58.015); //0.5V offset, 4V range, so ~0.283 PSI/V in the end
+                Transferredvalue = (float) ((value*0.00488 - 0.5) * 58.015) - 146; //0.5V offset, 4V range, so ~0.283 PSI/V in the end
             break;
             case 2: // Flow Sensor -  Used as temporary pot sensor
                 Transferredvalue =value*1;
             break;
             case 3: // Demonstration Test pot sensor (goes from 0% to 100%)
                 Transferredvalue = (float) (value*0.067567-176.6892);
+                break;
+            case 4: // Temperature Sensor in degC for Built-in thermistor
+                Transferredvalue = (float) (value*0.05-72);   //Very approximate function
                 break;
         }
         return Transferredvalue;

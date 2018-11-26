@@ -109,9 +109,26 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
                 gridLabel.setVerticalAxisTitle("Flow Rate " + sensor.getDimensions());
                 break;
             case 3:
-                gridLabel.setVerticalAxisTitle("Poentiometer" + sensor.getDimensions());
+                gridLabel.setVerticalAxisTitle("Potentiometer" + sensor.getDimensions());
                 break;
+            case 4:
+                gridLabel.setVerticalAxisTitle("Temperature Built-in" + sensor.getDimensions());
+                break;
+        }
+
+        gridLabel.setHorizontalAxisTitle("Time (sec)");
+
+        // adjust horizontal label to show time (approximate)
+        gridLabel.setLabelFormatter(new DefaultLabelFormatter(){
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if(isValueX) {
+                    return super.formatLabel(value / 10, isValueX); // scaling by 1/10 because of 10Hz packet frequency
                 }
+                return super.formatLabel(value, isValueX);
+            }
+        });
+
         this.emergencyStopButton = findViewById(R.id.emergencyStopSensorButton);
         this.BTstatusText = findViewById(R.id.BTStatusSensorTextview);
         emergencyStopButton.setOnClickListener(new View.OnClickListener() {
@@ -165,20 +182,6 @@ public class SingleSensorDisplayActivity extends AppCompatActivity {
 
             // update the Connection Status bar at the same time
             PacketAnalysis.GenerateStatusBarText(EngineStatus, BTstatusText); // This function update the status bar
-
-
-        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-
-                if (isValueX) {
-                    return super.formatLabel(value / 10, isValueX);
-                }
-                return null;
-            }
-
-        });
-
     }
 
 }
