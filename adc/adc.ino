@@ -20,7 +20,7 @@ void setup() {
   SPI.transfer(0b00000110);     //reset
   delay(WAIT);                  
   SPI.transfer(0b01000000);     //specify to write to reg 0
-  SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
+  SPI.transfer(0b00001000);     //Vdiff between A0 and A1, Gain of 1, pga disabled
   delay(WAIT);
   SPI.transfer(0b01000100);     //specify to write to reg 1
   SPI.transfer(0b00000100);     //Data rate = 90sps, Normal mode, single conversion, temp disabled, current sources disabled
@@ -77,7 +77,8 @@ void loop() {
 
 short readADC(){
   short result = 0;
-  result = SPI.transfer(0b0001000);
+  SPI.transfer(0b00010000);
+  result = SPI.transfer(0);
   result = result << 8;
   result += SPI.transfer(0);
   return result;
