@@ -8,11 +8,11 @@
   #define WAIT 1
   int LEDSTATUS = 0;
   char incomingByte = 0;   // for incoming serial data
-  short SensorRawValue[29];
+  uint16_t SensorRawValue[29];
   String buffer = "";
   bool fired = false;
 
-short rawValue = 0;
+uint16_t rawValue = 0;
 
   
   int POTPin = PB0;
@@ -41,7 +41,11 @@ void setup() {
   //Initialize SPI
   SPI.begin();
   pinMode(RDY,INPUT);
-  SPI.beginTransaction(SPISettings(12000000,MSBFIRST,SPI_MODE1)); //12MHz, MSB shifted out first, SPI Mode 1
+  SPI.beginTransaction(SPISettings(6000000,MSBFIRST,SPI_MODE1)); //12MHz, MSB shifted out first, SPI Mode 1
+   //SPI.setBitOrder(MSBFIRST); // Set the SPI-1 bit order (*)  
+  //SPI.setDataMode(SPI_MODE1); //Set the  SPI-1 data mode (**)  
+  //Set the SPI speed
+  //SPI.setClockDivider(SPI_BAUD_PCLK_DIV_16);   // Slow speed (72
   delay(5);
 
   //Set up ADS1120
@@ -150,7 +154,6 @@ void setup() {
       SensorRawValue[14] = -1;
       }
       //PRESSURE HEADER
-      SensorRawValue[15] = analogRead(ThermoPin);
       SensorRawValue[0] = analogRead(ThermoPin);
 
       SensorRawValue[16] = analogRead(HeaderPin);
@@ -159,15 +162,14 @@ void setup() {
       }
 
 //SPI DAVID CODE
-  SPI.transfer(0b00001000);
+SPI.transfer(0b00001000);
   delay(12);
 
   //Get TC1
-  rawValue = readADC();
-  SensorRawValue[1] = rawValue;
-  SensorRawValue[15] =   rawValue;
-
-
+    rawValue = readADC();
+    if (rawValue !=0){
+  SensorRawValue[1] = readADC();
+    }
   //Change to TC2 Port
   SPI.transfer(0b01000000);     //specify to write to reg 0
   SPI.transfer(0b01010001);     //Vdiff between A2 and A3, Gain of 1, pga disabled
@@ -178,12 +180,14 @@ void setup() {
   delay(12);
   
   //Get TC2
-  SensorRawValue[2] = readADC();
-
+  rawValue = readADC();
+  if (rawValue !=0){
+  SensorRawValue[2] = rawValue;
+  }
   //Change to TC1 Port
   SPI.transfer(0b01000000);     //specify to write to reg 0
   SPI.transfer(0b00000001);     //Vdiff between A0 and A1, Gain of 1, pga disabled
-  delay(WAIT);
+  delay(WAIT);;
 //End of SPI DAVID CODE
         
       buffer = ""; // Packet buffer set to empty
@@ -204,9 +208,10 @@ Serial1.print(buffer);
          }  
    }
 
-short readADC(){
-  short result = 0;
-  result = SPI.transfer(0b0001000);
+uint16_t readADC(){
+  uint16_t result = 0;
+  SPI.transfer(0b00010000);
+  result = SPI.transfer(0);
   result = result << 8;
   result += SPI.transfer(0);
   return result;
