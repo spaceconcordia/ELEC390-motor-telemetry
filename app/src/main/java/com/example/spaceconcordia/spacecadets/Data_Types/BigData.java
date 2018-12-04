@@ -77,7 +77,8 @@ public class BigData implements Serializable {
                 All_Sensor_List = new ArrayList<>();
 
                 for (int i = 0; i < SensList.getNbSensors(); i++) {
-                    if(!PacketParts[i + 1].equals("X")) {
+                    if(!PacketParts[i + 1].equals("X") && Integer.parseInt(PacketParts[i + 1],16) < 16000) {
+
                         Sensor_List[i].UpdateValue(Short.parseShort(PacketParts[i + 1], 16));
                         All_Sensor_List.add(i, Sensor_List[i].getName() + "\n" +
                                         "Current value " +

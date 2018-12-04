@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static java.lang.StrictMath.abs;
+
 public class Sensor implements Serializable {
 
     private String name;
@@ -51,10 +53,13 @@ public class Sensor implements Serializable {
         float Transferredvalue = 0;
         switch (type) {
             case 0: // Temperature Sensor in degC for ADC Board
-                Transferredvalue = (float) (value/0.000040);   //Approx. 40uV/degC
+                Transferredvalue = (float) (value);   //Approx. 40uV/degC
+                if (Transferredvalue > 10000){
+                    Transferredvalue = 10000;
+                }
             break;
             case 1: // Pressure Sensor in PSI
-                Transferredvalue = (float) ((value*0.00488 - 0.5) * 58.015) - 146; //0.5V offset, 4V range, so ~0.283 PSI/V in the end
+                Transferredvalue = (float) abs((((value*0.00488 - 0.5) * 58.015) - 146)/10); //0.5V offset, 4V range, so ~0.283 PSI/V in the end
             break;
             case 2: // Flow Sensor -  Used as temporary pot sensor
                 Transferredvalue =value*1;
